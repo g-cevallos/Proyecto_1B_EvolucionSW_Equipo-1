@@ -1,0 +1,22 @@
+[project]
+name = "cafeteria-pedidos"
+version = "1.0.0"
+description = "Gestión de pedidos de una cafetería universitaria"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["app"]
+branch = true
+
+[tool.pylint.main]
+ignore = ["instance", "docs"]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.bandit]
+exclude_dirs = ["tests", "docs", "instance"]
