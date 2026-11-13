@@ -256,3 +256,25 @@ class PedidoRepositorio:
             detalles=detalles,
             cliente_nombre=fila["cliente_nombre"],
         )
+
+
+class PersonalRepositorio:
+    """Acceso a la tabla ``personal`` (usuarios del personal de cafetería)."""
+
+    def __init__(self, conexion: sqlite3.Connection):
+        self._con = conexion
+
+    def crear(self, usuario: str, nombre: str, hash_clave: str) -> None:
+        """Registra un usuario del personal."""
+        self._con.execute(
+            "INSERT INTO personal (usuario, nombre, hash_clave) VALUES (?, ?, ?)",
+            (usuario, nombre, hash_clave),
+        )
+
+    def obtener(self, usuario: str) -> Optional[sqlite3.Row]:
+        """Devuelve la fila del usuario o ``None``."""
+        return self._con.execute("SELECT * FROM personal WHERE usuario = ?", (usuario,)).fetchone()
+
+    def contar(self) -> int:
+        """Número de usuarios del personal."""
+        return self._con.execute("SELECT COUNT(*) FROM personal").fetchone()[0]
