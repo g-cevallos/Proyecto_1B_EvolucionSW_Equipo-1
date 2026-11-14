@@ -102,7 +102,7 @@ Prioridad: M · Estimación: 5
 | # | Criterio de aceptación | CP |
 |---|---|---|
 | 1 | **Dado** que reviso una selección válida, **cuando** confirmo, **entonces** el pedido se registra en estado Pendiente con fecha, total y un código de retiro de 6 caracteres que se muestra en pantalla. | |
-| 2 | **Dado** cualquier cantidad de pedidos, **cuando** se confirman, **entonces** ningún código de retiro se repite. | |
+| 2 | **Dado** que existen pedidos registrados, **cuando** se confirma un nuevo pedido, **entonces** el código generado es diferente a todos los códigos de retiro existentes. | |
 | 3 | **Dado** un pedido confirmado, **cuando** el personal cambia después el precio del producto, **entonces** mi pedido conserva el precio con el que se confirmó. | |
 | 4 | **Dado** que un producto deja de estar disponible antes de confirmar, **cuando** confirmo, **entonces** se informa el motivo y el pedido no se registra. | |
 
@@ -208,7 +208,18 @@ Prioridad: M · Estimación: 3
 | RNF-07 | Rendimiento | Las páginas responden en menos de 1 s con hasta 1 000 pedidos en una instalación local. | |
 | RNF-08 | Concurrencia | Dos usuarios del personal no pueden aplicar el mismo cambio de estado dos veces. | |
 
-## 1.9 Ambigüedades detectadas y decisiones tomadas
+## 1.9 Reglas de negocio
+| Regla | Dónde se aplica | Prueba |
+|---|---|---|
+| RN-NEG-01 Al menos un producto; cantidades enteras positivas. | | |
+| RN-NEG-02 Solo productos disponibles en nuevos pedidos. | | |
+| RN-NEG-03 Total = Σ precio vigente × cantidad. | | |
+| RN-NEG-04 El precio del pedido no cambia si cambia el menú. | | |
+| RN-NEG-05 Código de retiro único. | | |
+| RN-NEG-06 Pendiente → En preparación → Listo para retirar → Entregado, en ese orden. | | |
+| RN-NEG-07 Entregado solo desde Listo para retirar y con el código del cliente. | | |
+
+## 1.10 Ambigüedades detectadas y decisiones tomadas
 
 La especificación deja abiertos varios puntos. El equipo tomó las decisiones siguientes, que deben **validarse con el cliente** antes del cierre del Release 1.0.
 
@@ -227,22 +238,46 @@ La especificación deja abiertos varios puntos. El equipo tomó las decisiones s
 | A-11 | Moneda y redondeo. | Dólares estadounidenses; importes almacenados en centavos enteros. | Evita errores de redondeo de punto flotante. |
 | A-12 | ¿Cómo se autentica el personal? | Usuario y clave; se crea un usuario inicial (`admin`) y pueden añadirse otros por línea de comandos. | La especificación no detalla gestión de usuarios del personal. |
 
-## 1.10 Fuera de alcance (Release 1.0)
+## 1.11 Fuera de alcance (Release 1.0)
 
 Pago electrónico o cobro en línea, integración con servicios financieros, notificaciones por correo o mensajería, impresoras o lectores de códigos, promociones, reembolsos, pedidos programados, gestión de inventario de ingredientes, cancelación de pedidos y gestión de usuarios del personal desde la interfaz.
 
-## 1.11 Matriz de trazabilidad
+## 1.12. Matriz de trazabilidad
 
-| Negocio | Usuario | Historia | Requisitos | Casos de prueba |
+Las siguientes matrices permiten relacionar las necesidades y reglas establecidas por el cliente con los requisitos derivados por el equipo, las historias de usuario y los elementos definidos en el diseño.
+
+La trazabilidad permite comprobar que las funcionalidades desarrolladas responden al alcance del proyecto y que los requisitos cuentan con elementos de diseño y verificación asociados.
+
+### 1.12.1. Matriz de trazabilidad funcional
+
+| Requisito de negocio | Requisito de usuario | Regla de negocio | Historia de usuario | Requisito funcional | Elementos de diseño relacionados | Casos de prueba |
+|---|---|---|---|---|---|---|
+| RN-01, RN-03 (relación de apoyo) | — | — | HU-01. Registrar cliente | RF-01, RF-02 | CU-01, ruta `/registro`, modelo Cliente y sección 2.7 | Pendiente |
+| RN-01, RN-03 (relación de apoyo) | RU-04, RU-05 (relación de apoyo) | — | HU-02. Identificar cliente | RF-03 | CU-02, ruta `/ingresar`, sección 2.9 de seguridad y gestión de sesión | Pendiente |
+| RN-02 | RU-01 | — | HU-03. Consultar menú | RF-04 | CU-03, ruta `/menu`, modelo Producto y sección 2.8 | Pendiente |
+| RN-01 | RU-02 | RN-NEG-01, RN-NEG-02 | HU-04. Seleccionar productos y cantidades | RF-05, RF-06 | CU-04, PN-01, ruta `/pedido/revisar`, modelo Pedido y Detalle del pedido | Pendiente |
+| RN-01, RN-02 | RU-03 | RN-NEG-03 | HU-05. Consultar importe total | RF-07, RF-08 | CU-04, PN-01, ruta `/pedido/revisar`, decisiones D-04 y D-05 | Pendiente |
+| RN-01, RN-04 | RU-04 | RN-NEG-01, RN-NEG-02, RN-NEG-03, RN-NEG-04, RN-NEG-05, RN-NEG-06 | HU-06. Confirmar pedido y obtener código | RF-08, RF-09 | CU-04, PN-01, ruta `/pedido/confirmar`, decisiones D-04, D-05 y D-09 | Pendiente |
+| RN-03 | RU-05 | RN-NEG-06 | HU-07. Consultar estado del pedido | RF-10, RF-16 | CU-05, ruta `/mis-pedidos`, ruta `/mis-pedidos/<id>`, diagrama de estados de la sección 2.5 | Pendiente |
+| RN-02 | RU-06 | — | HU-08. Registrar productos | RF-11 | CU-07, rutas `/personal/productos` y `/personal/productos/nuevo`, modelo Producto | Pendiente |
+| RN-02 | RU-06 | RN-NEG-04 | HU-09. Actualizar productos, precios y disponibilidad | RF-11 | CU-07, rutas `/personal/productos/<codigo>/editar` y `/personal/productos/<codigo>/disponibilidad`, modelo Producto | Pendiente |
+| RN-02, RN-03 (relación de apoyo) | RU-06, RU-07 (relación de apoyo) | — | HU-10. Iniciar sesión del personal | RF-12 | CU-06, ruta `/personal/ingresar` y sección 2.9 de seguridad | Pendiente |
+| RN-03 | RU-07 | RN-NEG-06 | HU-11. Consultar pedidos por estado | RF-13 | CU-08, PN-02, ruta `/personal/pedidos?estado=` y modelo Pedido | Pendiente |
+| RN-03 | RU-07 | RN-NEG-06 | HU-12. Avanzar estado de preparación | RF-14, RF-16 | CU-09, PN-02, diagrama de estados de la sección 2.5, ruta `/personal/pedidos/<id>/avanzar` y decisión D-08 | Pendiente |
+| RN-03, RN-04 | RU-07 | RN-NEG-06, RN-NEG-07 | HU-13. Entregar pedido verificando código | RF-15 | CU-10, PN-02, diagrama de estados de la sección 2.5, rutas `/personal/entrega` y `/personal/entrega/confirmar`, decisión D-07 | Pendiente |
+
+
+### 1.12.2. Matriz de trazabilidad de requisitos no funcionales
+
+Esta matriz relaciona los requisitos no funcionales definidos por el equipo con los elementos de diseño y las formas previstas para verificar su cumplimiento.
+
+| Requisito de negocio relacionado | Requisito no funcional | Elementos de diseño o documentación relacionados | Método de verificación | Casos de prueba |
 |---|---|---|---|---|
-| RN-02 | RU-01 | HU-03 | RF-04 | |
-| RN-01 | RU-02 | HU-04 | RF-05, RF-06 | |
-| RN-01, RN-02 | RU-03 | HU-05 | RF-07, RF-08 | |
-| RN-01, RN-04 | RU-04 | HU-06 | RF-08, RF-09 | |
-| RN-03 | RU-05 | HU-07 | RF-10, RF-16 | |
-| RN-02 | RU-06 | HU-08, HU-09 | RF-11 | |
-| RN-03 | RU-07 | HU-11, HU-12 | RF-13, RF-14 | |
-| RN-04 | RU-07 | HU-13 | RF-15 | |
-| — | — | HU-01, HU-02 | RF-01–RF-03 | |
-| — | — | HU-10 | RF-12 | |
-| — | — | — | RNF-01 | |
+| RN-01, RN-03 | RNF-01. Persistencia de información | Arquitectura de persistencia, sección 2.1; modelo de datos, sección 2.7; decisión D-02 | Registrar productos y pedidos, reiniciar la aplicación y comprobar que la información se conserva | Pendiente |
+| RN-01, RN-03, RN-04 | RNF-02. Integridad de la base de datos | Modelo de datos y diccionario, sección 2.7; restricciones UNIQUE, CHECK y claves foráneas | Comprobar que la base de datos rechaza registros duplicados o datos que incumplen las restricciones | Pendiente |
+| RN-01, RN-02, RN-03, RN-04 | RNF-03. Seguridad | Rutas y navegación, sección 2.8; seguridad, sección 2.9; manejo de errores, sección 2.10 | Verificar autenticación, control de acceso, protección CSRF, sesiones y validación de datos | Pendiente |
+| RN-02, RN-03 | RNF-04. Usabilidad | Diseño de interfaz y navegación, sección 2.8 | Comprobar la visualización desde distintos tamaños de pantalla, la navegación con teclado y la claridad de los mensajes | Pendiente |
+| RN-01, RN-02, RN-03, RN-04 | RNF-05. Mantenibilidad | Documento de ambiente de desarrollo, `03_ambiente_desarrollo.md`; herramientas de calidad y configuración de pruebas | Ejecutar las herramientas de análisis estático y comprobar los niveles de cobertura y calidad establecidos | Pendiente |
+| RN-01, RN-02, RN-03, RN-04 | RNF-06. Portabilidad | Documento de ambiente de desarrollo, `03_ambiente_desarrollo.md`; configuración de Python y dependencias | Instalar y ejecutar la aplicación en los sistemas operativos contemplados en el requisito | Pendiente |
+| RN-01, RN-03 | RNF-07. Rendimiento | Arquitectura de persistencia, sección 2.1; modelo de datos e índices, sección 2.7 | Medir el tiempo de consulta con un conjunto de hasta 1000 pedidos y comprobar el límite establecido de un segundo | Pendiente |
+| RN-03 | RNF-08. Concurrencia | Diagrama de estados, sección 2.5; diagramas de secuencia, sección 2.6; decisión D-08 | Simular que dos trabajadores intentan modificar simultáneamente el estado de un mismo pedido y comprobar que no se aplique dos veces el mismo cambio | Pendiente |
