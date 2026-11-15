@@ -99,6 +99,25 @@ def confirmar():
     return redirect(url_for("cliente.detalle_pedido", pedido_id=pedido.id, nuevo=1))
 
 
+@bp.route("/mis-pedidos")
+@cliente_requerido
+def mis_pedidos():
+    """Lista de pedidos del cliente con su estado (RU-05)."""
+    pedidos = servicio_pedidos().consultar_pedidos_cliente(session["cliente_id"])
+    return render_template("cliente/mis_pedidos.html", pedidos=pedidos)
+
+
+@bp.route("/mis-pedidos/<int:pedido_id>")
+@cliente_requerido
+def detalle_pedido(pedido_id: int):
+    """Resumen, código de retiro y seguimiento de un pedido (RU-04, RU-05)."""
+    servicio = servicio_pedidos()
+    pedido = servicio.consultar_pedido_cliente(session["cliente_id"], pedido_id)
+    return render_template("cliente/detalle_pedido.html", pedido=pedido,
+                           historial=servicio.historial(pedido_id),
+                           nuevo=request.args.get("nuevo") == "1")
+
+
 def _iniciar_sesion(cliente) -> None:
     session["cliente_id"] = cliente.id
     session["cliente_nombre"] = cliente.nombre_completo
