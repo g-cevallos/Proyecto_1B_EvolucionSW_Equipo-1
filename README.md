@@ -11,3 +11,12 @@ Aplicación web para consultar el menú, registrar pedidos anticipados y retirar
 - `documentacion`: entregables en la carpeta `docs/`.
 
 ## Inicio rápido
+
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate    ·    Linux/macOS: source .venv/bin/activate
+pip install -r requirements.txt
+python run.py
+```
+
+Abra <http://127.0.0.1:5000>. Personal: usuario `admin`, clave `cafeteria2026` (cámbiela con `CAFETERIA_ADMIN_CLAVE` antes de la primera ejecución).
