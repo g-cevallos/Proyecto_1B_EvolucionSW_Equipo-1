@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
-from app.dominio.excepciones import ErrorNegocio
-from app.web.comun import ruta_local, servicio_clientes, servicio_menu
+from app.dominio.excepciones import ErrorNegocio, TotalDesactualizadoError
+from app.web.comun import cliente_requerido, ruta_local, servicio_clientes, servicio_menu, servicio_pedidos
 
 bp = Blueprint("cliente", __name__)
 
@@ -58,6 +58,45 @@ def menu():
     """Menú con productos disponibles y precios (RU-01) y selección de cantidades (RU-02)."""
     return render_template("cliente/menu.html", productos=servicio_menu().listar_menu(),
                            cantidades=session.get("carrito", {}))
+
+
+@bp.route("/pedido/revisar", methods=["POST"])
+@cliente_requerido
+def revisar():
+    """Valida la selección y muestra el importe total antes de confirmar (RU-03)."""
+    entradas = {clave[5:]: valor for clave, valor in request.form.items() if clave.startswith("cant_")}
+    servicio = servicio_pedidos()
+    try:
+        items = servicio.interpretar_cantidades(entradas)
+        resumen = servicio.calcular_resumen(items)
+    except ErrorNegocio as error:
+        flash(error.mensaje, "error")
+        return render_template("cliente/menu.html", productos=servicio_menu().listar_menu(),
+                               cantidades=entradas), 422
+    session["carrito"] = items
+    return render_template("cliente/revisar.html", resumen=resumen)
+
+
+@bp.route("/pedido/confirmar", methods=["POST"])
+@cliente_requerido
+def confirmar():
+    """Confirma el pedido y muestra el código de retiro (RU-04)."""
+    items = session.get("carrito") or {}
+    servicio = servicio_pedidos()
+    try:
+        total_mostrado = int(request.form.get("total_mostrado", ""))
+    except ValueError:
+        total_mostrado = None
+    try:
+        pedido = servicio.confirmar_pedido(session["cliente_id"], items, total_mostrado)
+    except TotalDesactualizadoError as error:
+        flash(error.mensaje, "error")
+        return render_template("cliente/revisar.html", resumen=servicio.calcular_resumen(items)), 409
+    except ErrorNegocio as error:
+        flash(error.mensaje + " El pedido no se confirmó.", "error")
+        return redirect(url_for("cliente.menu"))
+    session.pop("carrito", None)
+    return redirect(url_for("cliente.detalle_pedido", pedido_id=pedido.id, nuevo=1))
 
 
 def _iniciar_sesion(cliente) -> None:
