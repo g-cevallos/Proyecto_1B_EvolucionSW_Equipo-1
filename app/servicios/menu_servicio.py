@@ -53,8 +53,12 @@ class MenuServicio:
         )
         if self._productos.obtener_por_codigo(producto.codigo):
             raise ProductoDuplicadoError(f"Ya existe un producto con código {producto.codigo}.")
-        with self._con:
-            return self._productos.crear(producto)
+        try:
+            with self._con:
+                return self._productos.crear(producto)
+        except sqlite3.IntegrityError as error:
+            # Otro usuario pudo registrar el mismo código entre la verificación y la inserción.
+            raise ProductoDuplicadoError(f"Ya existe un producto con código {producto.codigo}.") from error
 
     def actualizar_producto(self, codigo: str, nombre: str, categoria: str,
                             precio: str, disponible: bool) -> Producto:

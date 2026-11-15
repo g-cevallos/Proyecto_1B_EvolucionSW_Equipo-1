@@ -42,8 +42,13 @@ class ClienteServicio:
             raise ClienteDuplicadoError("Ya existe un cliente registrado con esa cédula.")
         if self._clientes.existe_correo(cliente.correo):
             raise ClienteDuplicadoError("Ya existe un cliente registrado con ese correo.")
-        with self._con:
-            return self._clientes.crear(cliente)
+        try:
+            with self._con:
+                return self._clientes.crear(cliente)
+        except sqlite3.IntegrityError as error:
+            # Otro registro con la misma cédula o correo pudo guardarse entre la
+            # verificación anterior y esta inserción; la restricción UNIQUE lo detecta.
+            raise ClienteDuplicadoError("Ya existe un cliente registrado con esa cédula o correo.") from error
 
     def identificar(self, cedula: str, correo: str) -> Cliente:
         """Identifica a un cliente registrado por su cédula y correo institucional.
