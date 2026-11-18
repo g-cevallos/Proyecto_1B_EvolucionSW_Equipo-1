@@ -103,7 +103,7 @@ class PedidoServicio:
         return ResumenPedido(detalles)
 
     def confirmar_pedido(self, cliente_id: int, items: Mapping[str, int],
-                         total_mostrado_centavos: Optional[int] = None) -> Pedido:
+                         total_mostrado_centavos: Optional[int]) -> Pedido:
         """Registra el pedido en estado Pendiente con un código de retiro único (RU-04).
 
         Se vuelven a validar las reglas al confirmar porque el menú pudo cambiar
@@ -112,15 +112,17 @@ class PedidoServicio:
         Args:
             cliente_id: Cliente que confirma.
             items: Código de producto → cantidad.
-            total_mostrado_centavos: Total que vio el cliente; si los precios cambiaron
-                y el total es distinto, el pedido no se confirma.
+            total_mostrado_centavos: Total que vio el cliente (obligatorio, RF-08). Si es
+                ``None`` (no se recibió) o es distinto del total vigente, el pedido no 
+                    se confirma y el cliente debe revisarlo otra vez.
 
         Raises:
-            TotalDesactualizadoError: Si el total vigente difiere del mostrado (RN-NEG-03).
+            TotalDesactualizadoError: Si el total vigente difiere del mostrado o 
+                no se recibió el total mostrado (RN-NEG-03).
             ErrorNegocio: Cualquier error de :meth:`calcular_resumen`.
         """
         resumen = self.calcular_resumen(items)
-        if total_mostrado_centavos is not None and resumen.total_centavos != total_mostrado_centavos:
+        if total_mostrado_centavos is None or resumen.total_centavos != total_mostrado_centavos:
             raise TotalDesactualizadoError(
                 "Los precios cambiaron mientras revisaba su pedido. "
                 f"El nuevo total es {formatear_centavos(resumen.total_centavos)}; revíselo y confirme otra vez."

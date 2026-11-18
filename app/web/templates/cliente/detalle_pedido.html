@@ -12,12 +12,14 @@
 </div>
 
 <h2>Seguimiento</h2>
-{% set fechas = {} %}{% for h in historial %}{% set _ = fechas.update({h.estado.value: h.fecha}) %}{% endfor %}
+{% set fechas = {} %}{% set responsables = {} %}
+{% for h in historial %}{% set _ = fechas.update({h.estado.value: h.fecha}) %}{% set _ = responsables.update({h.estado.value: h.usuario}) %}{% endfor %}
 <ol class="seguimiento">
   {% for e in ['PENDIENTE','EN_PREPARACION','LISTO_PARA_RETIRAR','ENTREGADO'] %}
     <li class="{% if e == pedido.estado.value %}actual{% elif e in fechas %}hecho{% endif %}">
       {{ {'PENDIENTE':'Pendiente','EN_PREPARACION':'En preparación','LISTO_PARA_RETIRAR':'Listo para retirar','ENTREGADO':'Entregado'}[e] }}
-      {% if e in fechas %}<time>{{ fechas[e] }}</time>{% endif %}
+      {% if e in fechas %}<time>{{ fechas[e] }}</time>
+      <span class="responsable">{% if responsables[e] == 'cliente' %}Registrado por usted{% else %}Por {{ responsables[e] }}{% endif %}</span>{% endif %}
     </li>
   {% endfor %}
 </ol>

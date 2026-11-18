@@ -90,9 +90,12 @@ def entrega():
 def confirmar_entrega():
     """Registra el pedido como Entregado tras verificar el código (PN-02 paso 5, RN-NEG-07)."""
     try:
-        pedido = servicio_pedidos().entregar_pedido(
-            int(request.form.get("pedido_id", "0")), request.form.get("codigo", ""),
-            session["personal_usuario"])
+        pedido_id = int(request.form.get("pedido_id", ""))
+    except ValueError:
+        flash("Identificador de pedido no válido. Busque el pedido por su código otra vez.", "error")
+        return redirect(url_for("personal.entrega"))
+    try:
+        pedido = servicio_pedidos().entregar_pedido(pedido_id, request.form.get("codigo", ""), session["personal_usuario"])
     except ErrorNegocio as error:
         flash(error.mensaje, "error")
         return redirect(url_for("personal.entrega"))

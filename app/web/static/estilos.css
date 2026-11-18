@@ -145,7 +145,7 @@ tfoot td { font-weight: 700; font-size: 1.1rem; border-bottom: none; }
 .seguimiento li { border-top: 4px solid var(--borde); padding-top: .5rem; font-size: .9rem; color: var(--tinta-suave); }
 .seguimiento li.hecho { border-color: var(--pizarra); color: var(--tinta); }
 .seguimiento li.actual { border-color: var(--mostaza); color: var(--tinta); font-weight: 600; }
-.seguimiento time { display: block; font-weight: 400; font-size: .8rem; color: var(--tinta-suave); }
+.seguimiento time, .seguimiento .responsable{ display: block; font-weight: 400; font-size: .8rem; color: var(--tinta-suave); }
 @media (max-width: 36rem) { .seguimiento { grid-template-columns: 1fr 1fr; } }
 
 /* Personal: pestañas de estado y tarjetas de pedido */
