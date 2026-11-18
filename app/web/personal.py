@@ -92,7 +92,8 @@ def confirmar_entrega():
     try:
         pedido_id = int(request.form.get("pedido_id", ""))
     except ValueError:
-        flash("Identificador de pedido no válido. Busque el pedido por su código otra vez.", "error")
+        flash("Identificador de pedido no válido. "
+            "Busque el pedido por su código otra vez.", "error")
         return redirect(url_for("personal.entrega"))
     try:
         pedido = servicio_pedidos().entregar_pedido(pedido_id, request.form.get("codigo", ""), session["personal_usuario"])

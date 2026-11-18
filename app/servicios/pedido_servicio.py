@@ -113,11 +113,11 @@ class PedidoServicio:
             cliente_id: Cliente que confirma.
             items: Código de producto → cantidad.
             total_mostrado_centavos: Total que vio el cliente (obligatorio, RF-08). Si es
-                ``None`` (no se recibió) o es distinto del total vigente, el pedido no 
+                ``None`` (no se recibió) o es distinto del total vigente, el pedido no
                     se confirma y el cliente debe revisarlo otra vez.
 
         Raises:
-            TotalDesactualizadoError: Si el total vigente difiere del mostrado o 
+            TotalDesactualizadoError: Si el total vigente difiere del mostrado o
                 no se recibió el total mostrado (RN-NEG-03).
             ErrorNegocio: Cualquier error de :meth:`calcular_resumen`.
         """
