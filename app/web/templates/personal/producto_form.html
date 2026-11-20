@@ -15,7 +15,7 @@
       <option value="BEBIDA" {% if datos.categoria == 'BEBIDA' %}selected{% endif %}>Bebida</option>
     </select></div>
   <div class="campo"><label for="precio">Precio (USD)</label><input id="precio" name="precio" type="text" inputmode="decimal" value="{{ datos.precio }}" required><p class="ayuda">Ejemplo: 1.50. Los pedidos ya registrados conservan su precio.</p></div>
-  <div class="campo casilla"><input id="disponible" name="disponible" type="checkbox" value="1" {% if datos.disponible %}checked{% endif %}><label for="disponible" style="margin:0">Disponible para nuevos pedidos</label></div>
-  <div class="acciones"><button class="boton-principal">{{ 'Agregar producto' if nuevo else 'Guardar cambios' }}</button><a href="{{ url_for('personal.productos') }}">Cancelar</a></div>
+  <div class="campo casilla"><input id="disponible" name="disponible" type="checkbox" value="1" {% if datos.disponible %}checked{% endif %}><label for="disponible">Disponible para nuevos pedidos</label></div>
+  <div class="acciones"><button class="boton-principal">{{ 'Agregar producto' if nuevo else 'Guardar cambios' }}</button><a class="boton" href="{{ url_for('personal.productos') }}">Cancelar</a></div>
 </form>
 {% endblock %}
