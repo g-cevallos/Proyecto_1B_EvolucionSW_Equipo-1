@@ -1,18 +1,26 @@
 {% extends "base.html" %}
 {% block titulo %}Inicio{% endblock %}
 {% block contenido %}
-<h1>Pide antes del receso y retira sin hacer fila</h1>
-<p class="suave">Revisa el menú con precios, confirma tu pedido y muestra el código en el mostrador cuando esté listo.</p>
+<section class="hero">
+  <h1>Pide antes del receso y retira sin hacer fila</h1>
+  <p class="suave">Revisa el menú con precios, confirma tu pedido y muestra el código en el mostrador cuando esté listo.</p>
+</section>
 <div class="puertas">
   <section class="puerta">
+    <span class="puerta-icono" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg>
+    </span>
     <h2>Soy estudiante o docente</h2>
     <p>Consulta el menú, arma tu pedido y sigue su estado.</p>
     <div class="acciones">
       <a class="boton boton-principal" href="{{ url_for('cliente.menu') }}">Ver el menú</a>
-      {% if not session.cliente_id %}<a href="{{ url_for('cliente.registro') }}">Crear mi cuenta</a>{% endif %}
+      {% if not session.cliente_id %}<a class="boton" href="{{ url_for('cliente.registro') }}">Crear mi cuenta</a>{% endif %}
     </div>
   </section>
   <section class="puerta">
+    <span class="puerta-icono" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
+    </span>
     <h2>Trabajo en la cafetería</h2>
     <p>Atiende los pedidos, registra entregas y mantén el menú al día.</p>
     <div class="acciones">
