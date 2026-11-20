@@ -62,35 +62,7 @@ flowchart TB
 | D-09 | Inyección del generador de código y del reloj en `PedidoServicio` | Llamadas directas | Permite probar colisiones de código y fechas exactas. |
 | D-10 | Renderizado en servidor con Jinja2, sin JavaScript obligatorio | SPA con React | Menor complejidad; funciona en cualquier navegador; actualización automática por `meta refresh`. |
 
-## 2.3 Diagrama de casos de uso
-
-```mermaid
-flowchart LR
-    C((Cliente))
-    P((Personal))
-    subgraph Sistema de pedidos de cafetería
-        CU1([CU-01 Registrarse])
-        CU2([CU-02 Identificarse])
-        CU3([CU-03 Consultar menú])
-        CU4([CU-04 Registrar pedido])
-        CU4a([Seleccionar productos<br/>y cantidades])
-        CU4b([Revisar importe total])
-        CU4c([Confirmar y obtener código])
-        CU5([CU-05 Consultar estado])
-        CU6([CU-06 Ingresar como personal])
-        CU7([CU-07 Mantener menú])
-        CU8([CU-08 Consultar pedidos por estado])
-        CU9([CU-09 Registrar avance])
-        CU10([CU-10 Entregar pedido])
-        CU10a([Verificar código de retiro])
-    end
-    C --- CU1 & CU2 & CU3 & CU4 & CU5
-    CU4 -.include.-> CU4a & CU4b & CU4c
-    P --- CU6 & CU7 & CU8 & CU9 & CU10
-    CU10 -.include.-> CU10a
-```
-
-## 2.4 Modelo de dominio (diagrama de clases)
+## 2.3 Modelo de dominio (diagrama de clases)
 
 ```mermaid
 classDiagram
@@ -183,10 +155,13 @@ classDiagram
         +buscar_por_codigo(codigo) Pedido
         +entregar_pedido(pedido_id, codigo, usuario) Pedido
         +historial(pedido_id) list
+        +contar_por_estado() dict
+        +obtener(pedido_id) Pedido
     }
     class MenuServicio {
         +listar_menu() list
         +listar_todos() list
+        +obtener(codigo) Producto
         +registrar_producto(...) Producto
         +actualizar_producto(...) Producto
         +cambiar_disponibilidad(codigo, disponible) Producto
@@ -194,10 +169,12 @@ classDiagram
     class ClienteServicio {
         +registrar(...) Cliente
         +identificar(cedula, correo) Cliente
+        +obtener(cliente_id) Cliente
     }
     class PersonalServicio {
         +registrar(usuario, nombre, clave)
         +autenticar(usuario, clave) str
+        +hay_usuarios() bool
     }
     class ErrorNegocio {
         +str mensaje
@@ -210,31 +187,20 @@ classDiagram
     ErrorNegocio <|-- TransicionEstadoInvalidaError
     ErrorNegocio <|-- EntregaInvalidaError
     ErrorNegocio <|-- ValidacionError
+    ErrorNegocio <|-- ProductoNoEncontradoError
+    ErrorNegocio <|-- ProductoDuplicadoError
+    ErrorNegocio <|-- PedidoNoEncontradoError
+    ErrorNegocio <|-- ClienteDuplicadoError
+    ErrorNegocio <|-- CredencialesInvalidasError
     PedidoServicio ..> ErrorNegocio : lanza
     MenuServicio ..> ErrorNegocio : lanza
     ClienteServicio ..> ErrorNegocio : lanza
+    PersonalServicio ..> ErrorNegocio : lanza
 ```
 
 Las excepciones guardan la regla de negocio que las origina (atributo `regla`), lo que facilita la trazabilidad entre el código, los requisitos y las pruebas.
 
-## 2.5 Ciclo de vida del pedido (diagrama de estados)
-
-```mermaid
-stateDiagram-v2
-    [*] --> Pendiente : cliente confirma (código único, RN-NEG-05)
-    Pendiente --> EnPreparacion : personal «Iniciar preparación»
-    EnPreparacion --> ListoParaRetirar : personal «Marcar listo para retirar»
-    ListoParaRetirar --> Entregado : personal verifica código (RN-NEG-07)
-    Entregado --> [*]
-    state "En preparación" as EnPreparacion
-    state "Listo para retirar" as ListoParaRetirar
-    note right of Pendiente
-        No se permite saltar, retroceder
-        ni repetir estados (RN-NEG-06)
-    end note
-```
-
-## 2.6 Diagramas de secuencia
+## 2.4 Diagramas de secuencia
 
 ### PN-01 · Registro de un pedido
 
@@ -263,7 +229,7 @@ sequenceDiagram
     C->>W: POST /pedido/confirmar (total_mostrado)
     W->>S: confirmar_pedido(cliente, items, total_mostrado)
     S->>S: calcular_resumen() otra vez
-    alt total distinto (precio cambió)
+    alt total distinto (precio cambió) o total_mostrado no recibido
         S-->>W: TotalDesactualizadoError
         W-->>C: revisión con nuevo total
     else total igual
@@ -291,25 +257,33 @@ sequenceDiagram
     S-->>W: pedidos en orden de llegada
     P->>W: POST /pedidos/{id}/avanzar (EN_PREPARACION)
     W->>S: avanzar_estado()
+    Note over S: Orden obligatorio: Pendiente → En preparación →<br/>Listo para retirar → Entregado. No se salta,<br/>retrocede ni repite un estado (RN-NEG-06)
     S->>RD: actualizar_estado(id, PENDIENTE → EN_PREPARACION)
     Note over S,RD: UPDATE … WHERE estado = 'PENDIENTE'<br/>0 filas = otro usuario ya lo cambió
-    S->>RD: registrar_historial()
+    S->>RD: registrar_historial(estado, fecha, usuario)
     P->>W: POST /pedidos/{id}/avanzar (LISTO_PARA_RETIRAR)
     C->>P: presenta el código de retiro
     P->>W: POST /personal/entrega (código)
     W->>S: buscar_por_codigo()
     S-->>W: pedido y estado
     P->>W: POST /personal/entrega/confirmar (id, código)
-    W->>S: entregar_pedido(id, código, usuario)
-    alt código no coincide o estado ≠ Listo
-        S-->>W: EntregaInvalidaError
-    else correcto
-        S->>RD: actualizar_estado(LISTO → ENTREGADO) + historial
-        W-->>P: «registrado como Entregado»
+    alt id del pedido no es un número válido
+        W-->>P: mensaje «Identificador de pedido no válido» y vuelve a /personal/entrega
+    else id válido
+        W->>S: entregar_pedido(id, código, usuario)
+        alt código no coincide o estado ≠ Listo
+            S-->>W: EntregaInvalidaError
+            W-->>P: mensaje del motivo y vuelve a /personal/entrega
+        else correcto
+            S->>RD: actualizar_estado(LISTO → ENTREGADO) + historial
+            W-->>P: «registrado como Entregado»
+        end
     end
 ```
 
-## 2.7 Modelo de datos
+Cada cambio de estado queda en `historial_estado` con la fecha y el usuario que lo hizo. El cliente ve ese historial en el seguimiento de su pedido (`/mis-pedidos/<id>`): cada estado alcanzado muestra su fecha y su responsable («Registrado por usted» para el estado Pendiente, «Por *usuario*» para los cambios hechos por el personal).
+
+## 2.5 Modelo de datos
 
 ```mermaid
 erDiagram
@@ -382,7 +356,7 @@ erDiagram
 
 `detalle_pedido` guarda también código y nombre del producto: el pedido histórico se muestra igual aunque el producto se renombre después.
 
-## 2.8 Diseño de la interfaz
+## 2.6 Diseño de la interfaz
 
 ### Mapa de navegación
 
@@ -394,7 +368,7 @@ flowchart LR
     IN & RG --> M
     M -->|Revisar pedido| RV[Revisión con total]
     RV -->|Cambiar selección| M
-    RV -->|Confirmar pedido| DT[Ticket y seguimiento<br/>/mis-pedidos/id]
+    RV -->|Confirmar pedido| DT[Ticket y seguimiento<br/>fecha y responsable por estado<br/>/mis-pedidos/id]
     DT --> MP[Mis pedidos]
     MP --> DT
     PI --> PP[Pedidos por estado]
@@ -415,12 +389,13 @@ flowchart LR
 | POST | `/pedido/revisar` | cliente | Valida selección y muestra total | HU-04, HU-05 |
 | POST | `/pedido/confirmar` | cliente | Registra pedido y genera código | HU-06 |
 | GET | `/mis-pedidos` | cliente | Pedidos del cliente | HU-07 |
-| GET | `/mis-pedidos/<id>` | cliente dueño | Ticket, seguimiento y detalle | HU-06, HU-07 |
+| GET | `/mis-pedidos/<id>` | cliente dueño | Ticket, seguimiento (fecha y responsable de cada estado) y detalle | HU-06, HU-07 |
 | GET, POST | `/personal/ingresar` | público | Ingreso del personal | HU-10 |
+| POST | `/personal/salir` | personal | Cerrar sesión del personal | — |
 | GET | `/personal/pedidos?estado=` | personal | Pedidos por estado | HU-11 |
 | POST | `/personal/pedidos/<id>/avanzar` | personal | Avance de estado | HU-12 |
 | GET, POST | `/personal/entrega` | personal | Búsqueda por código | HU-13 |
-| POST | `/personal/entrega/confirmar` | personal | Registro de entrega | HU-13 |
+| POST | `/personal/entrega/confirmar` | personal | Registro de entrega; si el identificador del pedido no es válido vuelve a la búsqueda con un mensaje | HU-13 |
 | GET | `/personal/productos` | personal | Listado del menú | HU-08, HU-09 |
 | GET, POST | `/personal/productos/nuevo` | personal | Alta de producto | HU-08 |
 | GET, POST | `/personal/productos/<codigo>/editar` | personal | Edición | HU-09 |
@@ -430,7 +405,7 @@ flowchart LR
 
 El menú se presenta como la **pizarra** de la cafetería (fondo verde pizarra, líneas punteadas entre nombre y precio), un referente que el cliente ya conoce del mostrador. El código de retiro se presenta como un **ticket** con letras grandes en fuente monoespaciada para leerlo fácilmente en voz alta. Cada estado tiene un color fijo (azul Pendiente, ámbar En preparación, verde Listo para retirar, gris Entregado) que se repite en todas las pantallas. Los estilos están en un único archivo (`app/web/static/estilos.css`), se adaptan a celulares y respetan el modo oscuro del sistema y la preferencia de movimiento reducido.
 
-## 2.9 Diseño de seguridad
+## 2.7 Diseño de seguridad
 
 | Amenaza | Medida |
 |---|---|
@@ -442,6 +417,6 @@ El menú se presenta como la **pizarra** de la cafetería (fondo verde pizarra, 
 | Adivinar códigos de retiro | 31⁶ ≈ 887 millones de combinaciones generadas con `secrets`. |
 | Manipulación de cookies | Sesión firmada con clave secreta aleatoria persistida en `instance/secret_key`; cookies `HttpOnly` y `SameSite=Lax`. |
 
-## 2.10 Manejo de errores
+## 2.8 Manejo de errores
 
-Las violaciones de reglas se modelan como subclases de `ErrorNegocio`. Las rutas las capturan y muestran el mensaje en la misma pantalla (código HTTP 422 en validaciones, 409 si el total cambió, 401 en credenciales). Los errores no capturados de tipo `ErrorNegocio` se muestran en la página de error con código 400. Los errores HTTP 404 y 405 tienen páginas propias en español. Toda operación que escribe varias filas (pedido, detalles e historial) se ejecuta en una transacción: si algo falla no queda un pedido incompleto.
+Las violaciones de reglas se modelan como subclases de `ErrorNegocio`. Las rutas las capturan y muestran el mensaje en la misma pantalla (código HTTP 422 en validaciones, 409 si el total cambió o no se recibió el total mostrado, 401 en credenciales). Los errores no capturados de tipo `ErrorNegocio` se muestran en la página de error con código 400. Los datos mal formados que llegan en un formulario (por ejemplo, un identificador de pedido que no es un número) se validan en la ruta y se responden con un mensaje, sin provocar un error 500. Un formulario `POST` sin token CSRF válido se rechaza con código 400 y el mensaje «El formulario expiró». Los errores HTTP 400, 403, 404 y 405 tienen páginas propias en español. Toda operación que escribe varias filas (pedido, detalles e historial) se ejecuta en una transacción: si algo falla no queda un pedido incompleto.

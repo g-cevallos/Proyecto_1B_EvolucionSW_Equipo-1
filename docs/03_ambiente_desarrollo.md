@@ -138,4 +138,4 @@ python -m playwright install chromium     # solo para scripts/capturas.py
 
 ## 3.7 Integración continua
 
-`.github/workflows/ci.yml` se ejecuta en cada *push* a `main`, `develop` y `documentacion` y en cada *pull request*. Instala Python 3.11, 3.12 y 3.13, y ejecuta flake8, pylint (falla bajo 9.0), bandit y pytest con cobertura (falla bajo 85 %). El reporte de cobertura queda como artefacto descargable del flujo.
+`.github/workflows/ci.yml` se ejecuta en cada *push* a `main`, `develop` y `documentacion` y en cada *pull request*. Instala Python 3.11, 3.12 y 3.13, y ejecuta flake8 sobre todo el repositorio, pylint (falla bajo 9.0), bandit (falla con hallazgos de severidad media o alta) y pytest con cobertura de líneas y ramas. pylint y bandit se ejecutan solo si existe código en `app/`, y pytest solo si existen pruebas en `tests/`. En ese caso, el reporte HTML de cobertura queda como artefacto descargable del flujo.

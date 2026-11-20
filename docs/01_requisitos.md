@@ -113,7 +113,7 @@ Prioridad: M · Estimación: 3
 | # | Criterio de aceptación | CP |
 |---|---|---|
 | 1 | **Dado** que tengo pedidos, **cuando** abro «Mis pedidos», **entonces** veo cada uno con fecha, código, estado y total, del más reciente al más antiguo. | |
-| 2 | **Dado** un pedido, **cuando** abro su detalle, **entonces** veo el seguimiento con la hora de cada estado alcanzado. | |
+| 2 | **Dado** un pedido, **cuando** abro su detalle, **entonces** veo el seguimiento con la hora de cada estado alcanzado y quién lo registró. | |
 | 3 | **Dado** el pedido de otro cliente, **cuando** intento abrirlo, **entonces** no se muestra. | |
 
 ### HU-08 · Registrar productos en el menú (RU-06)
@@ -185,7 +185,7 @@ Prioridad: M · Estimación: 3
 | RF-05 | aceptar cantidades enteras positivas hasta un máximo configurable (50 por defecto). | HU-04 | |
 | RF-06 | rechazar pedidos vacíos, con productos inexistentes o no disponibles, indicando el motivo. | HU-04 | |
 | RF-07 | calcular subtotales y total con el precio vigente antes de la confirmación. | HU-05 | |
-| RF-08 | volver a validar disponibilidad y total al confirmar, y rechazar si el total cambió. | HU-05, HU-06 | |
+| RF-08 | volver a validar disponibilidad y total al confirmar, y rechazar si el total cambió o si no se recibió el total mostrado al cliente. | HU-05, HU-06 | |
 | RF-09 | registrar el pedido en estado Pendiente con fecha, total, detalle con precio unitario congelado y código de retiro único de 6 caracteres. | HU-06 | |
 | RF-10 | listar los pedidos del cliente con su estado, y mostrar el detalle y el seguimiento solo a su dueño. | HU-07 | |
 | RF-11 | registrar, editar y activar/desactivar productos. | HU-08, HU-09 | |
@@ -252,19 +252,19 @@ La trazabilidad permite comprobar que las funcionalidades desarrolladas responde
 
 | Requisito de negocio | Requisito de usuario | Regla de negocio | Historia de usuario | Requisito funcional | Elementos de diseño relacionados | Casos de prueba |
 |---|---|---|---|---|---|---|
-| RN-01, RN-03 (relación de apoyo) | — | — | HU-01. Registrar cliente | RF-01, RF-02 | CU-01, ruta `/registro`, modelo Cliente y sección 2.7 | Pendiente |
-| RN-01, RN-03 (relación de apoyo) | RU-04, RU-05 (relación de apoyo) | — | HU-02. Identificar cliente | RF-03 | CU-02, ruta `/ingresar`, sección 2.9 de seguridad y gestión de sesión | Pendiente |
-| RN-02 | RU-01 | — | HU-03. Consultar menú | RF-04 | CU-03, ruta `/menu`, modelo Producto y sección 2.8 | Pendiente |
-| RN-01 | RU-02 | RN-NEG-01, RN-NEG-02 | HU-04. Seleccionar productos y cantidades | RF-05, RF-06 | CU-04, PN-01, ruta `/pedido/revisar`, modelo Pedido y Detalle del pedido | Pendiente |
-| RN-01, RN-02 | RU-03 | RN-NEG-03 | HU-05. Consultar importe total | RF-07, RF-08 | CU-04, PN-01, ruta `/pedido/revisar`, decisiones D-04 y D-05 | Pendiente |
-| RN-01, RN-04 | RU-04 | RN-NEG-01, RN-NEG-02, RN-NEG-03, RN-NEG-04, RN-NEG-05, RN-NEG-06 | HU-06. Confirmar pedido y obtener código | RF-08, RF-09 | CU-04, PN-01, ruta `/pedido/confirmar`, decisiones D-04, D-05 y D-09 | Pendiente |
-| RN-03 | RU-05 | RN-NEG-06 | HU-07. Consultar estado del pedido | RF-10, RF-16 | CU-05, ruta `/mis-pedidos`, ruta `/mis-pedidos/<id>`, diagrama de estados de la sección 2.5 | Pendiente |
-| RN-02 | RU-06 | — | HU-08. Registrar productos | RF-11 | CU-07, rutas `/personal/productos` y `/personal/productos/nuevo`, modelo Producto | Pendiente |
-| RN-02 | RU-06 | RN-NEG-04 | HU-09. Actualizar productos, precios y disponibilidad | RF-11 | CU-07, rutas `/personal/productos/<codigo>/editar` y `/personal/productos/<codigo>/disponibilidad`, modelo Producto | Pendiente |
-| RN-02, RN-03 (relación de apoyo) | RU-06, RU-07 (relación de apoyo) | — | HU-10. Iniciar sesión del personal | RF-12 | CU-06, ruta `/personal/ingresar` y sección 2.9 de seguridad | Pendiente |
-| RN-03 | RU-07 | RN-NEG-06 | HU-11. Consultar pedidos por estado | RF-13 | CU-08, PN-02, ruta `/personal/pedidos?estado=` y modelo Pedido | Pendiente |
-| RN-03 | RU-07 | RN-NEG-06 | HU-12. Avanzar estado de preparación | RF-14, RF-16 | CU-09, PN-02, diagrama de estados de la sección 2.5, ruta `/personal/pedidos/<id>/avanzar` y decisión D-08 | Pendiente |
-| RN-03, RN-04 | RU-07 | RN-NEG-06, RN-NEG-07 | HU-13. Entregar pedido verificando código | RF-15 | CU-10, PN-02, diagrama de estados de la sección 2.5, rutas `/personal/entrega` y `/personal/entrega/confirmar`, decisión D-07 | Pendiente |
+| RN-01, RN-03 (relación de apoyo) | — | — | HU-01. Registrar cliente | RF-01, RF-02 | Ruta `/registro`, modelo Cliente y sección 2.5 | Pendiente |
+| RN-01, RN-03 (relación de apoyo) | RU-04, RU-05 (relación de apoyo) | — | HU-02. Identificar cliente | RF-03 | Ruta `/ingresar`, sección 2.7 de seguridad y gestión de sesión | Pendiente |
+| RN-02 | RU-01 | — | HU-03. Consultar menú | RF-04 | Ruta `/menu`, modelo Producto y sección 2.6 | Pendiente |
+| RN-01 | RU-02 | RN-NEG-01, RN-NEG-02 | HU-04. Seleccionar productos y cantidades | RF-05, RF-06 | PN-01, ruta `/pedido/revisar`, modelo Pedido y Detalle del pedido | Pendiente |
+| RN-01, RN-02 | RU-03 | RN-NEG-03 | HU-05. Consultar importe total | RF-07, RF-08 | PN-01, ruta `/pedido/revisar`, decisiones D-04 y D-05 | Pendiente |
+| RN-01, RN-04 | RU-04 | RN-NEG-01, RN-NEG-02, RN-NEG-03, RN-NEG-04, RN-NEG-05, RN-NEG-06 | HU-06. Confirmar pedido y obtener código | RF-08, RF-09 | PN-01 (rechazo si el total cambió o no se recibió), ruta `/pedido/confirmar`, decisiones D-04, D-05 y D-09 | Pendiente |
+| RN-03 | RU-05 | RN-NEG-06 | HU-07. Consultar estado del pedido | RF-10, RF-16 | Ruta `/mis-pedidos`, ruta `/mis-pedidos/<id>`, seguimiento con fecha y responsable de cada estado (secciones 2.4 y 2.6), tabla `historial_estado` | Pendiente |
+| RN-02 | RU-06 | — | HU-08. Registrar productos | RF-11 | Rutas `/personal/productos` y `/personal/productos/nuevo`, modelo Producto | Pendiente |
+| RN-02 | RU-06 | RN-NEG-04 | HU-09. Actualizar productos, precios y disponibilidad | RF-11 | Rutas `/personal/productos/<codigo>/editar` y `/personal/productos/<codigo>/disponibilidad`, modelo Producto | Pendiente |
+| RN-02, RN-03 (relación de apoyo) | RU-06, RU-07 (relación de apoyo) | — | HU-10. Iniciar sesión del personal | RF-12 | Rutas `/personal/ingresar` y `/personal/salir`, sección 2.7 de seguridad | Pendiente |
+| RN-03 | RU-07 | RN-NEG-06 | HU-11. Consultar pedidos por estado | RF-13 | PN-02, ruta `/personal/pedidos?estado=` y modelo Pedido | Pendiente |
+| RN-03 | RU-07 | RN-NEG-06 | HU-12. Avanzar estado de preparación | RF-14, RF-16 | PN-02 (orden obligatorio de estados), ruta `/personal/pedidos/<id>/avanzar` y decisión D-08 | Pendiente |
+| RN-03, RN-04 | RU-07 | RN-NEG-06, RN-NEG-07 | HU-13. Entregar pedido verificando código | RF-15 | PN-02 (orden obligatorio de estados y validación del identificador del pedido), rutas `/personal/entrega` y `/personal/entrega/confirmar`, decisión D-07 | Pendiente |
 
 
 ### 1.12.2. Matriz de trazabilidad de requisitos no funcionales
@@ -273,11 +273,11 @@ Esta matriz relaciona los requisitos no funcionales definidos por el equipo con 
 
 | Requisito de negocio relacionado | Requisito no funcional | Elementos de diseño o documentación relacionados | Método de verificación | Casos de prueba |
 |---|---|---|---|---|
-| RN-01, RN-03 | RNF-01. Persistencia de información | Arquitectura de persistencia, sección 2.1; modelo de datos, sección 2.7; decisión D-02 | Registrar productos y pedidos, reiniciar la aplicación y comprobar que la información se conserva | Pendiente |
-| RN-01, RN-03, RN-04 | RNF-02. Integridad de la base de datos | Modelo de datos y diccionario, sección 2.7; restricciones UNIQUE, CHECK y claves foráneas | Comprobar que la base de datos rechaza registros duplicados o datos que incumplen las restricciones | Pendiente |
-| RN-01, RN-02, RN-03, RN-04 | RNF-03. Seguridad | Rutas y navegación, sección 2.8; seguridad, sección 2.9; manejo de errores, sección 2.10 | Verificar autenticación, control de acceso, protección CSRF, sesiones y validación de datos | Pendiente |
-| RN-02, RN-03 | RNF-04. Usabilidad | Diseño de interfaz y navegación, sección 2.8 | Comprobar la visualización desde distintos tamaños de pantalla, la navegación con teclado y la claridad de los mensajes | Pendiente |
+| RN-01, RN-03 | RNF-01. Persistencia de información | Arquitectura de persistencia, sección 2.1; modelo de datos, sección 2.5; decisión D-02 | Registrar productos y pedidos, reiniciar la aplicación y comprobar que la información se conserva | Pendiente |
+| RN-01, RN-03, RN-04 | RNF-02. Integridad de la base de datos | Modelo de datos y diccionario, sección 2.5; restricciones UNIQUE, CHECK y claves foráneas | Comprobar que la base de datos rechaza registros duplicados o datos que incumplen las restricciones | Pendiente |
+| RN-01, RN-02, RN-03, RN-04 | RNF-03. Seguridad | Rutas y navegación, sección 2.6; seguridad, sección 2.7; manejo de errores, sección 2.8 | Verificar autenticación, control de acceso, protección CSRF, sesiones y validación de datos | Pendiente |
+| RN-02, RN-03 | RNF-04. Usabilidad | Diseño de interfaz y navegación, sección 2.6 | Comprobar la visualización desde distintos tamaños de pantalla, la navegación con teclado y la claridad de los mensajes | Pendiente |
 | RN-01, RN-02, RN-03, RN-04 | RNF-05. Mantenibilidad | Documento de ambiente de desarrollo, `03_ambiente_desarrollo.md`; herramientas de calidad y configuración de pruebas | Ejecutar las herramientas de análisis estático y comprobar los niveles de cobertura y calidad establecidos | Pendiente |
 | RN-01, RN-02, RN-03, RN-04 | RNF-06. Portabilidad | Documento de ambiente de desarrollo, `03_ambiente_desarrollo.md`; configuración de Python y dependencias | Instalar y ejecutar la aplicación en los sistemas operativos contemplados en el requisito | Pendiente |
-| RN-01, RN-03 | RNF-07. Rendimiento | Arquitectura de persistencia, sección 2.1; modelo de datos e índices, sección 2.7 | Medir el tiempo de consulta con un conjunto de hasta 1000 pedidos y comprobar el límite establecido de un segundo | Pendiente |
-| RN-03 | RNF-08. Concurrencia | Diagrama de estados, sección 2.5; diagramas de secuencia, sección 2.6; decisión D-08 | Simular que dos trabajadores intentan modificar simultáneamente el estado de un mismo pedido y comprobar que no se aplique dos veces el mismo cambio | Pendiente |
+| RN-01, RN-03 | RNF-07. Rendimiento | Arquitectura de persistencia, sección 2.1; modelo de datos e índices, sección 2.5 | Medir el tiempo de consulta con un conjunto de hasta 1000 pedidos y comprobar el límite establecido de un segundo | Pendiente |
+| RN-03 | RNF-08. Concurrencia | Diagramas de secuencia, sección 2.4 (orden de estados y control de concurrencia en PN-02); decisión D-08 | Simular que dos trabajadores intentan modificar simultáneamente el estado de un mismo pedido y comprobar que no se aplique dos veces el mismo cambio | Pendiente |
