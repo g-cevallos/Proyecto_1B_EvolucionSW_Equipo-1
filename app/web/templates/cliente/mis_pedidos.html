@@ -7,17 +7,17 @@
 {% if not pedidos %}
   <div class="vacio">Aún no tienes pedidos. <a href="{{ url_for('cliente.menu') }}">Revisa el menú</a> para hacer el primero.</div>
 {% else %}
-<div class="tabla-contenedor">
+<div class="tabla-contenedor tabla-tarjetas">
 <table>
   <thead><tr><th>Pedido</th><th>Registrado</th><th>Código de retiro</th><th>Estado</th><th class="num">Total</th></tr></thead>
   <tbody>
   {% for p in pedidos %}
     <tr>
-      <td><a href="{{ url_for('cliente.detalle_pedido', pedido_id=p.id) }}">#{{ p.id }}</a></td>
-      <td>{{ p.fecha_registro }}</td>
-      <td><strong style="font-family: ui-monospace, Consolas, monospace; letter-spacing:.1em">{{ p.codigo_retiro }}</strong></td>
-      <td><span class="estado estado-{{ p.estado.value }}">{{ p.estado.etiqueta }}</span></td>
-      <td class="num">{{ p.total_centavos|dinero }}</td>
+      <td data-etiqueta="Pedido"><a href="{{ url_for('cliente.detalle_pedido', pedido_id=p.id) }}">#{{ p.id }}</a></td>
+      <td data-etiqueta="Registrado">{{ p.fecha_registro }}</td>
+      <td data-etiqueta="Código de retiro"><strong class="codigo-retiro-celda">{{ p.codigo_retiro }}</strong></td>
+      <td data-etiqueta="Estado"><span class="estado estado-{{ p.estado.value }}">{{ p.estado.etiqueta }}</span></td>
+      <td class="num" data-etiqueta="Total">{{ p.total_centavos|dinero }}</td>
     </tr>
   {% endfor %}
   </tbody>
