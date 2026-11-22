@@ -1,4 +1,4 @@
-# 5. Reporte de Análisis Estático del Código
+# 4. Reporte de Análisis Estático del Código
 
 **Proyecto:** Gestión de pedidos de una cafetería universitaria
 **Versión analizada:** 1.0.0 · rama `documentacion`, commit `9a83c23` (el código de `app/` y `run.py` es idéntico al de `main`)
@@ -6,13 +6,13 @@
 **Entorno:** Python 3.14.8
 **Evidencias:** carpeta [`docs/reportes/analisis_estatico/`](reportes/analisis_estatico/)
 
-## 5.1 Propósito y alcance
+## 4.1 Propósito y alcance
 
 El análisis estático examina el código fuente sin ejecutarlo, para detectar errores de estilo, defectos probables, vulnerabilidades conocidas y exceso de complejidad antes de las pruebas.
 
 Se analizaron los 21 archivos Python del proyecto: los 20 módulos del paquete `app/` (1 774 líneas físicas y 1 118 líneas de código efectivo, según radon) y `run.py`. No se analizan las plantillas HTML ni la hoja de estilos, porque las herramientas usadas solo leen código Python.
 
-## 5.2 Herramientas y configuración
+## 4.2 Herramientas y configuración
 
 | Herramienta | Versión | Qué revisa | Configuración |
 |---|---|---|---|
@@ -21,7 +21,7 @@ Se analizaron los 21 archivos Python del proyecto: los 20 módulos del paquete `
 | bandit | 1.9.4 | Vulnerabilidades de seguridad conocidas. | `pyproject.toml`: excluye `tests`, `docs` e `instance`. |
 | radon | 6.0.1 | Complejidad ciclomática, índice de mantenibilidad y métricas de tamaño. | Por defecto. |
 
-## 5.3 Cómo reproducir el análisis
+## 4.3 Cómo reproducir el análisis
 
 ```bash
 python -m venv .venv
@@ -41,7 +41,7 @@ radon raw app -s > $D/radon_metricas.txt
 
 Las salidas completas, junto con la versión de Python y el commit analizado (`entorno.txt`), están en `docs/reportes/analisis_estatico/`.
 
-## 5.4 Resultados
+## 4.4 Resultados
 
 | Herramienta | Resultado | Umbral del CI | Cumple |
 |---|---|---|---|
@@ -107,7 +107,7 @@ El índice baja con la cantidad de código y de operaciones de un módulo. Los m
 
 Los módulos más grandes, por líneas de código fuente, son `persistencia/repositorios.py` (197), `servicios/pedido_servicio.py` (149) y `web/personal.py` (133).
 
-## 5.5 Supresiones de reglas en el código
+## 4.5 Supresiones de reglas en el código
 
 Hay tres supresiones, todas de pylint. No hay `# noqa`, `# nosec` ni `# type: ignore`.
 
@@ -117,7 +117,7 @@ Hay tres supresiones, todas de pylint. No hay `# noqa`, `# nosec` ni `# type: ig
 | `app/config.py` · clase `Config` | `too-few-public-methods` | Es una clase de configuración que solo agrupa valores; no necesita métodos. |
 | `app/__init__.py` · función `create_app` | `import-outside-toplevel` | Patrón de fábrica de Flask: los módulos de rutas se cargan al crear la aplicación, justo antes de registrarlos. |
 
-## 5.6 Hallazgos detectados durante el desarrollo
+## 4.6 Hallazgos detectados durante el desarrollo
 
 El código actual no tiene avisos, pero flake8 (en el CI y en local) sí detectó avisos en varios momentos de la construcción. Se corrigieron antes de integrar. Para documentarlos se ejecutó flake8 sobre el estado de cada commit, antes y después de la corrección.
 
@@ -128,14 +128,14 @@ El código actual no tiene avisos, pero flake8 (en el CI y en local) sí detect�
 | 3 | 17/11/2026 | W291 (2 avisos), E501 (1 aviso) | `app/servicios/pedido_servicio.py` (líneas 116 y 120) y `app/web/personal.py` (línea 98, de 123 caracteres) | Espacios al final de línea y una línea por encima del máximo de 120. | Commit `a541dfd` | 2 avisos: E128 y E501 en `personal.py` |
 | 4 | 17/11/2026 | E128 (1 aviso), E501 (1 aviso) | `app/web/personal.py` (líneas 96 y 99, función de confirmación de entrega) | La corrección anterior dejó una continuación mal indentada y una línea todavía de 123 caracteres. | Commit `117717b` | 0 avisos |
 
-## 5.7 Observaciones de la revisión manual
+## 4.7 Observaciones de la revisión manual
 
 Estas observaciones no las reportan las herramientas:
 
 1. **Clave inicial del personal por defecto.** En `app/config.py`, `PERSONAL_INICIAL_CLAVE` toma el valor `"cafeteria2026"` si no se define la variable de entorno `CAFETERIA_ADMIN_CLAVE`. Bandit no lo reporta porque su regla de contraseñas fijas (B105) busca nombres de variable como `password`, `pass`, `pwd`, `secret` o `token`, y esta se llama `CLAVE`. En una demostración local el riesgo es bajo y el README indica cambiarla antes de la primera ejecución. En una instalación real debe definirse la variable de entorno.
 2. **Valores por defecto del servidor.** `run.py` arranca con `debug=False` y escucha en `127.0.0.1`, es decir, solo accesible desde el propio equipo, salvo que se defina `CAFETERIA_HOST`. La configuración activa la protección CSRF y marca las cookies de sesión como `HttpOnly` y `SameSite=Lax`.
 
-## 5.8 Conclusión
+## 4.8 Conclusión
 
 - El código cumple los umbrales de calidad: flake8 sin avisos, pylint 10.00/10 y bandit sin hallazgos en ninguna severidad.
 - La complejidad promedio es A (2.12) y todos los módulos tienen índice de mantenibilidad de rango A.
