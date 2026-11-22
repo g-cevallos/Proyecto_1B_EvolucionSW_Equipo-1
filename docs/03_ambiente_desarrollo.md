@@ -31,7 +31,7 @@ Proyecto_1B_EvolucionSW_Equipo-1/
 │   ├── persistencia/          # esquema SQLite y repositorios
 │   ├── servicios/             # casos de uso y reglas de negocio
 │   └── web/                   # blueprints, plantillas y estilos
-├── tests/                     # pruebas pytest (CP-01 a CP-47)
+├── tests/                     # pruebas automáticas con pytest
 ├── scripts/capturas.py        # prueba de sistema con navegador y capturas
 ├── docs/                      # solo en la rama documentacion
 ├── .github/workflows/ci.yml   # integración continua
@@ -66,7 +66,7 @@ gitGraph
     commit id: "esquema y repositorios"
     commit id: "servicios"
     commit id: "interfaz web"
-    commit id: "pruebas CP-01..CP-47"
+    commit id: "pruebas automáticas"
     commit id: "integración continua"
     checkout main
     merge develop tag: "v1.0.0"
@@ -133,9 +133,9 @@ python -m playwright install chromium     # solo para scripts/capturas.py
 | Análisis completo | `pylint app run.py scripts` y `pylint tests` |
 | Seguridad | `bandit -r app run.py` |
 | Complejidad | `radon cc app -s -a` · `radon mi app -s` |
-| Documentación técnica | `pdoc app -o docs/api --docformat google` |
+| Documentación técnica | `pdoc app -o docs/05_documentacion_tecnica --docformat google` |
 | Prueba de sistema y capturas | `python scripts/capturas.py docs/img` |
 
 ## 3.7 Integración continua
 
-`.github/workflows/ci.yml` se ejecuta en cada *push* a `main`, `develop` y `documentacion` y en cada *pull request*. Instala Python 3.11, 3.12 y 3.13, y ejecuta flake8 sobre todo el repositorio, pylint (falla bajo 9.0), bandit (falla con hallazgos de severidad media o alta) y pytest con cobertura de líneas y ramas. pylint y bandit se ejecutan solo si existe código en `app/`, y pytest solo si existen pruebas en `tests/`. En ese caso, el reporte HTML de cobertura queda como artefacto descargable del flujo.
+`.github/workflows/ci.yml` se ejecuta en cada *push* a `main`, `develop` y `documentacion` y en cada *pull request*. Instala Python 3.11, 3.12 y 3.13, y ejecuta flake8 sobre todo el repositorio, pylint (falla bajo 9.0), bandit (falla con hallazgos de severidad media o alta) y pytest con cobertura de líneas y ramas, que falla si la cobertura es menor a 85 %. pylint y bandit se ejecutan solo si existe código en `app/`, y pytest solo si existen pruebas en `tests/`. En ese caso, el reporte HTML de cobertura queda como artefacto descargable del flujo.
