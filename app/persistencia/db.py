@@ -1,7 +1,7 @@
 """Creación de conexiones y del esquema de la base de datos SQLite.
 
 La información de productos, clientes y pedidos persiste entre ejecuciones
-en un archivo ``.db`` (requisito de la sección 8 de la especificación).
+en un archivo ``.db``.
 """
 
 from __future__ import annotations

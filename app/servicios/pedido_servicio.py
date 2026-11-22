@@ -1,4 +1,4 @@
-"""Casos de uso de pedidos: registro (PN-01) y preparación y entrega (PN-02)."""
+"""Casos de uso de pedidos: registro, preparación y entrega."""
 
 from __future__ import annotations
 
@@ -30,7 +30,8 @@ def _ahora() -> str:
 
 
 class PedidoServicio:
-    """Aplica las reglas RN-NEG-01 a RN-NEG-07 sobre los pedidos.
+    """Aplica las reglas de negocio de los pedidos: selección válida, total vigente,
+    código de retiro único y orden obligatorio de los estados.
 
     Args:
         conexion: Conexión SQLite abierta.
@@ -49,7 +50,7 @@ class PedidoServicio:
         self._generar_codigo = generador_codigo
         self._reloj = reloj
 
-    # ------------------------------------------------------------------ PN-01
+    # ---------------------------------------------------------- registro del pedido
     def interpretar_cantidades(self, entradas: Mapping[str, str]) -> dict[str, int]:
         """Convierte las cantidades escritas en el formulario a enteros.
 
@@ -71,16 +72,16 @@ class PedidoServicio:
         return cantidades
 
     def calcular_resumen(self, items: Mapping[str, int]) -> ResumenPedido:
-        """Valida la selección y calcula el importe con los precios vigentes (RU-02, RU-03).
+        """Valida la selección y calcula el importe con los precios vigentes.
 
         Args:
             items: Diccionario código de producto → cantidad.
 
         Raises:
-            PedidoVacioError: Si no hay productos (RN-NEG-01).
-            CantidadInvalidaError: Si una cantidad no es entero positivo o supera el máximo (RN-NEG-01).
+            PedidoVacioError: Si no hay productos.
+            CantidadInvalidaError: Si una cantidad no es entero positivo o supera el máximo.
             ProductoNoEncontradoError: Si un código no existe.
-            ProductoNoDisponibleError: Si un producto no está disponible (RN-NEG-02).
+            ProductoNoDisponibleError: Si un producto no está disponible.
         """
         if not items:
             raise PedidoVacioError("Seleccione al menos un producto para registrar el pedido.")
@@ -104,7 +105,7 @@ class PedidoServicio:
 
     def confirmar_pedido(self, cliente_id: int, items: Mapping[str, int],
                          total_mostrado_centavos: Optional[int]) -> Pedido:
-        """Registra el pedido en estado Pendiente con un código de retiro único (RU-04).
+        """Registra el pedido en estado Pendiente con un código de retiro único.
 
         Se vuelven a validar las reglas al confirmar porque el menú pudo cambiar
         mientras el cliente revisaba su selección.
@@ -112,13 +113,13 @@ class PedidoServicio:
         Args:
             cliente_id: Cliente que confirma.
             items: Código de producto → cantidad.
-            total_mostrado_centavos: Total que vio el cliente (obligatorio, RF-08). Si es
+            total_mostrado_centavos: Total que vio el cliente (obligatorio). Si es
                 ``None`` (no se recibió) o es distinto del total vigente, el pedido no
-                    se confirma y el cliente debe revisarlo otra vez.
+                se confirma y el cliente debe revisarlo otra vez.
 
         Raises:
             TotalDesactualizadoError: Si el total vigente difiere del mostrado o
-                no se recibió el total mostrado (RN-NEG-03).
+                no se recibió el total mostrado.
             ErrorNegocio: Cualquier error de :meth:`calcular_resumen`.
         """
         resumen = self.calcular_resumen(items)
@@ -140,7 +141,7 @@ class PedidoServicio:
         return self._pedidos.obtener(pedido.id)
 
     def consultar_pedidos_cliente(self, cliente_id: int) -> list[Pedido]:
-        """Pedidos del cliente con su estado actual (RU-05)."""
+        """Pedidos del cliente con su estado actual."""
         return self._pedidos.listar_por_cliente(cliente_id)
 
     def consultar_pedido_cliente(self, cliente_id: int, pedido_id: int) -> Pedido:
@@ -154,9 +155,9 @@ class PedidoServicio:
             raise PedidoNoEncontradoError("No se encontró el pedido solicitado.")
         return pedido
 
-    # ------------------------------------------------------------------ PN-02
+    # ---------------------------------------------------------- preparación y entrega
     def listar_pedidos(self, estado: Optional[EstadoPedido] = None) -> list[Pedido]:
-        """Pedidos para el personal, en orden de llegada (RU-07)."""
+        """Pedidos para el personal, en orden de llegada."""
         return self._pedidos.listar(estado)
 
     def contar_por_estado(self) -> dict[EstadoPedido, int]:
@@ -175,7 +176,7 @@ class PedidoServicio:
         return pedido
 
     def historial(self, pedido_id: int) -> list[CambioEstado]:
-        """Cambios de estado registrados para el pedido (seguimiento, RN-03)."""
+        """Cambios de estado registrados para el pedido (seguimiento)."""
         return self._pedidos.historial(pedido_id)
 
     def avanzar_estado(self, pedido_id: int, estado_nuevo: EstadoPedido, usuario: str) -> Pedido:
@@ -185,8 +186,9 @@ class PedidoServicio:
         código de retiro; use :meth:`entregar_pedido`.
 
         Raises:
+            PedidoNoEncontradoError: Si el pedido no existe.
             TransicionEstadoInvalidaError: Si ``estado_nuevo`` no es el inmediato
-                siguiente (RN-NEG-06) o si es Entregado (RN-NEG-07).
+                siguiente, si es Entregado o si otro usuario cambió el estado antes.
         """
         pedido = self.obtener(pedido_id)
         if estado_nuevo is EstadoPedido.ENTREGADO:
@@ -213,11 +215,13 @@ class PedidoServicio:
         return pedido
 
     def entregar_pedido(self, pedido_id: int, codigo_presentado: str, usuario: str) -> Pedido:
-        """Registra la entrega de un pedido (RN-NEG-07).
+        """Registra la entrega de un pedido.
 
         Raises:
+            PedidoNoEncontradoError: Si el pedido no existe.
             EntregaInvalidaError: Si el código no corresponde al pedido o si el
                 pedido no está en estado Listo para retirar.
+            TransicionEstadoInvalidaError: Si otro usuario cambió el estado antes.
         """
         pedido = self.obtener(pedido_id)
         if normalizar_codigo(codigo_presentado) != pedido.codigo_retiro:

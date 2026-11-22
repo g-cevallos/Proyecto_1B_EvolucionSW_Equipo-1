@@ -24,7 +24,7 @@ class Categoria(str, Enum):
 
 
 class EstadoPedido(str, Enum):
-    """Etapas de atención de un pedido (RN-NEG-06).
+    """Etapas de atención de un pedido.
 
     El orden de declaración es el único orden permitido de avance:
     Pendiente → En preparación → Listo para retirar → Entregado.
@@ -37,7 +37,7 @@ class EstadoPedido(str, Enum):
 
     @property
     def etiqueta(self) -> str:
-        """Nombre legible del estado, tal como aparece en la especificación."""
+        """Nombre legible del estado, tal como se muestra al usuario."""
         return _ETIQUETAS_ESTADO[self]
 
     def siguiente(self) -> Optional["EstadoPedido"]:
@@ -87,7 +87,7 @@ class Cliente:
 
 @dataclass
 class DetallePedido:
-    """Producto incluido en un pedido con su cantidad y el precio congelado (RN-NEG-04)."""
+    """Producto incluido en un pedido con su cantidad y el precio congelado."""
 
     producto_id: int
     codigo_producto: str
@@ -114,7 +114,7 @@ class CambioEstado:
 class Pedido:  # pylint: disable=too-many-instance-attributes
     """Solicitud confirmada por un cliente.
 
-    Reúne los atributos que la especificación exige para un pedido;
+    Reúne todos los atributos de un pedido;
     dividirlo solo para satisfacer el umbral de pylint empeoraría la legibilidad.
     """
 
@@ -130,11 +130,11 @@ class Pedido:  # pylint: disable=too-many-instance-attributes
 
 @dataclass
 class ResumenPedido:
-    """Selección revisada por el cliente antes de confirmar (RU-03)."""
+    """Selección revisada por el cliente antes de confirmar."""
 
     detalles: list[DetallePedido]
 
     @property
     def total_centavos(self) -> int:
-        """Suma de precio vigente × cantidad de cada línea (RN-NEG-03)."""
+        """Suma de precio vigente × cantidad de cada línea."""
         return sum(detalle.subtotal_centavos for detalle in self.detalles)

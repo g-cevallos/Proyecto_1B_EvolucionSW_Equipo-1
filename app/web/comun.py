@@ -61,8 +61,14 @@ def personal_requerido(vista):
 
 
 def ruta_local(destino: str | None, por_defecto: str) -> str:
-    """Acepta solo rutas internas para evitar redirecciones abiertas."""
-    if destino and destino.startswith("/") and not destino.startswith("//"):
+    """Acepta solo rutas internas para evitar redirecciones abiertas.
+
+    Se rechazan los destinos que empiezan con dos barras y los que contienen barras
+    invertidas o caracteres de control (como una tabulación), porque los navegadores
+    los interpretan como una dirección de otro sitio.
+    """
+    if (destino and destino.startswith("/") and not destino.startswith("//")
+            and "\\" not in destino and not any(ord(c) < 32 or ord(c) == 127 for c in destino)):
         return destino
     return por_defecto
 
@@ -88,7 +94,7 @@ def registrar(aplicacion: Flask) -> None:
             esperado = session.get("csrf")
             enviado = request.form.get("csrf", "")
             # Sin token en la sesión no hay nada con qué comparar: se rechaza
-            # (antes "" == "" permitía el envío; ver CP-44 en la documentación de pruebas).
+            # (de lo contrario, un envío con token vacío coincidiría con una sesión sin token).
             if not esperado or not secrets.compare_digest(enviado, esperado):
                 abort(400, "El formulario expiró. Vuelva a cargar la página e inténtelo de nuevo.")
 
