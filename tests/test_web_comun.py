@@ -103,7 +103,10 @@ def test_ruta_local_acepta_rutas_internas(destino):
     assert ruta_local(destino, "/por-defecto") == destino
 
 
-@pytest.mark.parametrize("destino", [None, "", "menu", "//evil.com", "https://evil.com", "http://evil.com/x"])
+@pytest.mark.parametrize("destino", [
+    None, "", "menu", "//evil.com", "https://evil.com", "http://evil.com/x",
+    "/\\evil.com", "/\t/evil.com", "/\n/evil.com", "/\r/evil.com",
+], ids=repr)
 def test_ruta_local_rechaza_destinos_externos_o_relativos(destino):
     assert ruta_local(destino, "/por-defecto") == "/por-defecto"
 
@@ -116,3 +119,12 @@ def test_el_parametro_siguiente_externo_no_redirige_fuera_del_sitio(web, enviar,
                                            "siguiente": "//evil.com"})
     assert respuesta.status_code == 302
     assert "evil.com" not in respuesta.headers["Location"]
+
+
+@pytest.mark.parametrize("siguiente", ["/\t/evil.com", "/\\evil.com"])
+def test_un_destino_disfrazado_no_redirige_fuera_del_sitio(web, otro_web, enviar, registrar_cliente, siguiente):
+    cliente = registrar_cliente(web)
+    respuesta = enviar(otro_web, "/ingresar", {"cedula": cliente.cedula, "correo": cliente.correo,
+                                               "siguiente": siguiente})
+    assert respuesta.status_code == 302
+    assert respuesta.headers["Location"] == "/menu"

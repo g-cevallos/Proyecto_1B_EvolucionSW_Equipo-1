@@ -1,4 +1,4 @@
-"""Rutas del personal: pedidos (RU-07), entrega con código (RN-NEG-07) y menú (RU-06)."""
+"""Rutas del personal: pedidos, entrega con código y menú."""
 
 from __future__ import annotations
 
@@ -44,7 +44,7 @@ def salir():
 @bp.route("/pedidos")
 @personal_requerido
 def pedidos():
-    """Pedidos agrupados por estado, en orden de llegada (RU-07, PN-02 paso 1)."""
+    """Pedidos agrupados por estado, en orden de llegada."""
     try:
         estado = EstadoPedido(request.args.get("estado", EstadoPedido.PENDIENTE.value))
     except ValueError:
@@ -58,7 +58,7 @@ def pedidos():
 @bp.route("/pedidos/<int:pedido_id>/avanzar", methods=["POST"])
 @personal_requerido
 def avanzar(pedido_id: int):
-    """Registra el avance de estado de un pedido (PN-02 pasos 2 y 3)."""
+    """Registra el avance de estado de un pedido."""
     estado_origen = request.form.get("estado_origen", EstadoPedido.PENDIENTE.value)
     try:
         nuevo = EstadoPedido(request.form.get("estado_nuevo", ""))
@@ -74,7 +74,7 @@ def avanzar(pedido_id: int):
 @bp.route("/entrega", methods=["GET", "POST"])
 @personal_requerido
 def entrega():
-    """Busca el pedido que corresponde al código que presenta el cliente (PN-02 paso 4)."""
+    """Busca el pedido que corresponde al código que presenta el cliente."""
     pedido = None
     codigo = request.form.get("codigo", "")
     if request.method == "POST":
@@ -88,7 +88,7 @@ def entrega():
 @bp.route("/entrega/confirmar", methods=["POST"])
 @personal_requerido
 def confirmar_entrega():
-    """Registra el pedido como Entregado tras verificar el código (PN-02 paso 5, RN-NEG-07)."""
+    """Registra el pedido como Entregado tras verificar el código."""
     try:
         pedido_id = int(request.form.get("pedido_id", ""))
     except ValueError:
@@ -107,14 +107,14 @@ def confirmar_entrega():
 @bp.route("/productos")
 @personal_requerido
 def productos():
-    """Listado completo del menú para su mantenimiento (RU-06)."""
+    """Listado completo del menú para su mantenimiento."""
     return render_template("personal/productos.html", productos=servicio_menu().listar_todos())
 
 
 @bp.route("/productos/nuevo", methods=["GET", "POST"])
 @personal_requerido
 def nuevo_producto():
-    """Registro de un producto nuevo (RU-06)."""
+    """Registro de un producto nuevo."""
     datos = _datos_producto()
     if request.method == "POST":
         try:
@@ -131,7 +131,7 @@ def nuevo_producto():
 @bp.route("/productos/<codigo>/editar", methods=["GET", "POST"])
 @personal_requerido
 def editar_producto(codigo: str):
-    """Actualización de nombre, categoría, precio y disponibilidad (RU-06)."""
+    """Actualización de nombre, categoría, precio y disponibilidad."""
     servicio = servicio_menu()
     producto = servicio.obtener(codigo)
     if request.method == "POST":
@@ -154,7 +154,7 @@ def editar_producto(codigo: str):
 @bp.route("/productos/<codigo>/disponibilidad", methods=["POST"])
 @personal_requerido
 def disponibilidad(codigo: str):
-    """Activa o desactiva un producto con un solo clic (RU-06, RN-NEG-02)."""
+    """Activa o desactiva un producto con un solo clic."""
     producto = servicio_menu().cambiar_disponibilidad(codigo, request.form.get("disponible") == "1")
     estado = "disponible" if producto.disponible else "no disponible"
     flash(f"«{producto.nombre}» ahora está {estado}.", "exito")

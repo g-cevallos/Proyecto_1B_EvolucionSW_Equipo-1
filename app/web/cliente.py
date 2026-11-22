@@ -1,4 +1,4 @@
-"""Rutas del cliente: registro, menú, pedido y consulta de estado (RU-01 a RU-05)."""
+"""Rutas del cliente: registro, menú, pedido y consulta de estado."""
 
 from __future__ import annotations
 
@@ -55,7 +55,7 @@ def salir():
 
 @bp.route("/menu")
 def menu():
-    """Menú con productos disponibles y precios (RU-01) y selección de cantidades (RU-02)."""
+    """Menú con productos disponibles y precios y selección de cantidades."""
     return render_template("cliente/menu.html", productos=servicio_menu().listar_menu(),
                            cantidades=session.get("carrito", {}))
 
@@ -63,7 +63,7 @@ def menu():
 @bp.route("/pedido/revisar", methods=["POST"])
 @cliente_requerido
 def revisar():
-    """Valida la selección y muestra el importe total antes de confirmar (RU-03)."""
+    """Valida la selección y muestra el importe total antes de confirmar."""
     entradas = {clave[5:]: valor for clave, valor in request.form.items() if clave.startswith("cant_")}
     servicio = servicio_pedidos()
     try:
@@ -80,7 +80,7 @@ def revisar():
 @bp.route("/pedido/confirmar", methods=["POST"])
 @cliente_requerido
 def confirmar():
-    """Confirma el pedido y muestra el código de retiro (RU-04)."""
+    """Confirma el pedido y muestra el código de retiro."""
     items = session.get("carrito") or {}
     servicio = servicio_pedidos()
     try:
@@ -102,7 +102,7 @@ def confirmar():
 @bp.route("/mis-pedidos")
 @cliente_requerido
 def mis_pedidos():
-    """Lista de pedidos del cliente con su estado (RU-05)."""
+    """Lista de pedidos del cliente con su estado."""
     pedidos = servicio_pedidos().consultar_pedidos_cliente(session["cliente_id"])
     return render_template("cliente/mis_pedidos.html", pedidos=pedidos)
 
@@ -110,7 +110,7 @@ def mis_pedidos():
 @bp.route("/mis-pedidos/<int:pedido_id>")
 @cliente_requerido
 def detalle_pedido(pedido_id: int):
-    """Resumen, código de retiro y seguimiento de un pedido (RU-04, RU-05)."""
+    """Resumen, código de retiro y seguimiento de un pedido."""
     servicio = servicio_pedidos()
     pedido = servicio.consultar_pedido_cliente(session["cliente_id"], pedido_id)
     return render_template("cliente/detalle_pedido.html", pedido=pedido,

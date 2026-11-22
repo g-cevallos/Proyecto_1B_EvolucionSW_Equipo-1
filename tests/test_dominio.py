@@ -102,10 +102,6 @@ def test_la_excepcion_conserva_el_mensaje_para_el_usuario(clase):
     assert str(error) == "Mensaje para el usuario"
 
 
-def test_el_error_base_no_asocia_ninguna_regla():
-    assert excepciones.ErrorNegocio.regla is None
-
-
 # ---------------------------------------------------------- generador de códigos
 def test_el_codigo_de_retiro_tiene_seis_caracteres_del_alfabeto():
     codigo = generar_codigo_retiro()

@@ -1,4 +1,4 @@
-"""Casos de uso del menú: consulta (RU-01) y mantenimiento por el personal (RU-06)."""
+"""Casos de uso del menú: consulta y mantenimiento por el personal."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ class MenuServicio:
         self._productos = ProductoRepositorio(conexion)
 
     def listar_menu(self) -> list[Producto]:
-        """Productos disponibles con sus precios, tal como los ve el cliente (RU-01)."""
+        """Productos disponibles con sus precios, tal como los ve el cliente."""
         return self._productos.listar(solo_disponibles=True)
 
     def listar_todos(self) -> list[Producto]:
@@ -38,7 +38,7 @@ class MenuServicio:
 
     def registrar_producto(self, codigo: str, nombre: str, categoria: str,
                            precio: str, disponible: bool) -> Producto:
-        """Registra un producto nuevo en el menú (RU-06).
+        """Registra un producto nuevo en el menú.
 
         Raises:
             ValidacionError: Si algún dato no es válido.
@@ -62,9 +62,9 @@ class MenuServicio:
 
     def actualizar_producto(self, codigo: str, nombre: str, categoria: str,
                             precio: str, disponible: bool) -> Producto:
-        """Actualiza nombre, categoría, precio y disponibilidad (RU-06).
+        """Actualiza nombre, categoría, precio y disponibilidad.
 
-        El cambio de precio no afecta a pedidos ya registrados (RN-NEG-04),
+        El cambio de precio no afecta a pedidos ya registrados,
         porque cada detalle de pedido guarda su propio precio unitario.
         """
         producto = self.obtener(codigo)
@@ -77,7 +77,7 @@ class MenuServicio:
         return producto
 
     def cambiar_disponibilidad(self, codigo: str, disponible: bool) -> Producto:
-        """Marca un producto como disponible o no disponible (RU-06, RN-NEG-02)."""
+        """Marca un producto como disponible o no disponible."""
         producto = self.obtener(codigo)
         producto.disponible = bool(disponible)
         with self._con:
