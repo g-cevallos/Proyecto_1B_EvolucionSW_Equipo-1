@@ -51,9 +51,9 @@ Prioridad: M · Estimación: 3
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** que ingreso nombre, apellido, cédula válida, celular y correo institucional, **cuando** envío el formulario, **entonces** quedo registrado, recibo un código `CLI-xxxxx` y paso al menú. | |
-| 2 | **Dado** una cédula con dígito verificador incorrecto, un celular que no empieza con 09 o un correo de otro dominio, **cuando** envío, **entonces** veo el motivo y no se registra nada. | |
-| 3 | **Dado** que la cédula o el correo ya están registrados, **cuando** envío, **entonces** se me informa y no se crea un duplicado. | |
+| 1 | **Dado** que ingreso nombre, apellido, cédula válida, celular y correo institucional, **cuando** envío el formulario, **entonces** quedo registrado, recibo un código `CLI-xxxxx` y paso al menú. | CP-001 |
+| 2 | **Dado** una cédula con dígito verificador incorrecto, un celular que no empieza con 09 o un correo de otro dominio, **cuando** envío, **entonces** veo el motivo y no se registra nada. | CP-001 |
+| 3 | **Dado** que la cédula o el correo ya están registrados, **cuando** envío, **entonces** se me informa y no se crea un duplicado. | CP-001 |
 
 ### HU-02 · Identificarme como cliente
 **Como** cliente registrado **quiero** ingresar con mi cédula y correo **para** pedir y ver mis pedidos.
@@ -61,9 +61,9 @@ Prioridad: M · Estimación: 2
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** que mi cédula y correo coinciden con un registro, **cuando** ingreso, **entonces** accedo al menú con mi nombre visible. | |
-| 2 | **Dado** una combinación que no coincide, **cuando** ingreso, **entonces** veo «La cédula y el correo no corresponden a un cliente registrado». | |
-| 3 | **Dado** que no he ingresado, **cuando** intento revisar un pedido o ver «Mis pedidos», **entonces** se me lleva a la pantalla de ingreso. | |
+| 1 | **Dado** que mi cédula y correo coinciden con un registro, **cuando** ingreso, **entonces** accedo al menú con mi nombre visible. | CP-001 |
+| 2 | **Dado** una combinación que no coincide, **cuando** ingreso, **entonces** veo «La cédula y el correo no corresponden a un cliente registrado». | CP-001 |
+| 3 | **Dado** que no he ingresado, **cuando** intento revisar un pedido o ver «Mis pedidos», **entonces** se me lleva a la pantalla de ingreso. | CP-002, CP-005 |
 
 ### HU-03 · Consultar el menú (RU-01)
 **Como** cliente **quiero** ver los productos disponibles con sus precios **para** decidir qué pedir.
@@ -71,8 +71,8 @@ Prioridad: M · Estimación: 2
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** productos disponibles y no disponibles, **cuando** abro el menú, **entonces** veo solo los disponibles, agrupados en alimentos y bebidas, con su precio. | |
-| 2 | **Dado** que no he ingresado, **cuando** abro el menú, **entonces** puedo verlo pero se me invita a ingresar para pedir. | |
+| 1 | **Dado** productos disponibles y no disponibles, **cuando** abro el menú, **entonces** veo solo los disponibles, agrupados en alimentos y bebidas, con su precio. | CP-002 |
+| 2 | **Dado** que no he ingresado, **cuando** abro el menú, **entonces** puedo verlo pero se me invita a ingresar para pedir. | CP-002 |
 
 ### HU-04 · Seleccionar productos y cantidades (RU-02)
 **Como** cliente **quiero** indicar la cantidad de cada producto **para** armar mi pedido.
@@ -80,11 +80,11 @@ Prioridad: M · Estimación: 3
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** el menú, **cuando** escribo cantidades en uno o más productos, **entonces** solo esos productos forman la selección. | |
-| 2 | **Dado** que no escribo ninguna cantidad, **cuando** pido revisar, **entonces** veo «Seleccione al menos un producto»| |
-| 3 | **Dado** una cantidad negativa, decimal o no numérica, **cuando** pido revisar, **entonces** veo que debe ser un entero positivo. | |
-| 4 | **Dado** una cantidad mayor que el máximo configurado, **cuando** pido revisar, **entonces** se rechaza. | |
-| 5 | **Dado** un producto no disponible, **cuando** intento incluirlo, **entonces** se rechaza. | |
+| 1 | **Dado** el menú, **cuando** escribo cantidades en uno o más productos, **entonces** solo esos productos forman la selección. | CP-003 |
+| 2 | **Dado** que no escribo ninguna cantidad, **cuando** pido revisar, **entonces** veo «Seleccione al menos un producto»| CP-003 |
+| 3 | **Dado** una cantidad negativa, decimal o no numérica, **cuando** pido revisar, **entonces** veo que debe ser un entero positivo. | CP-003 |
+| 4 | **Dado** una cantidad mayor que el máximo configurado, **cuando** pido revisar, **entonces** se rechaza. | CP-003 |
+| 5 | **Dado** un producto no disponible, **cuando** intento incluirlo, **entonces** se rechaza. | CP-003 |
 
 ### HU-05 · Conocer el importe total antes de confirmar (RU-03)
 **Como** cliente **quiero** ver el detalle y el total **para** confirmar sabiendo cuánto pagaré.
@@ -92,8 +92,8 @@ Prioridad: M · Estimación: 2
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** una selección válida, **cuando** pido revisar, **entonces** veo cada producto con cantidad, precio vigente y subtotal, y el total igual a la suma de precio × cantidad. | |
-| 2 | **Dado** que un precio cambió mientras revisaba, **cuando** confirmo, **entonces** el pedido no se registra, veo el nuevo total y debo confirmar otra vez. | |
+| 1 | **Dado** una selección válida, **cuando** pido revisar, **entonces** veo cada producto con cantidad, precio vigente y subtotal, y el total igual a la suma de precio × cantidad. | CP-004 |
+| 2 | **Dado** que un precio cambió mientras revisaba, **cuando** confirmo, **entonces** el pedido no se registra, veo el nuevo total y debo confirmar otra vez. | CP-004 |
 
 ### HU-06 · Confirmar el pedido y obtener un código de retiro (RU-04)
 **Como** cliente **quiero** confirmar y recibir un código **para** retirar mi pedido sin confusiones.
@@ -101,10 +101,10 @@ Prioridad: M · Estimación: 5
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** que reviso una selección válida, **cuando** confirmo, **entonces** el pedido se registra en estado Pendiente con fecha, total y un código de retiro de 6 caracteres que se muestra en pantalla. | |
-| 2 | **Dado** que existen pedidos registrados, **cuando** se confirma un nuevo pedido, **entonces** el código generado es diferente a todos los códigos de retiro existentes. | |
-| 3 | **Dado** un pedido confirmado, **cuando** el personal cambia después el precio del producto, **entonces** mi pedido conserva el precio con el que se confirmó. | |
-| 4 | **Dado** que un producto deja de estar disponible antes de confirmar, **cuando** confirmo, **entonces** se informa el motivo y el pedido no se registra. | |
+| 1 | **Dado** que reviso una selección válida, **cuando** confirmo, **entonces** el pedido se registra en estado Pendiente con fecha, total y un código de retiro de 6 caracteres que se muestra en pantalla. | CP-004 |
+| 2 | **Dado** que existen pedidos registrados, **cuando** se confirma un nuevo pedido, **entonces** el código generado es diferente a todos los códigos de retiro existentes. | CP-004 |
+| 3 | **Dado** un pedido confirmado, **cuando** el personal cambia después el precio del producto, **entonces** mi pedido conserva el precio con el que se confirmó. | CP-004 |
+| 4 | **Dado** que un producto deja de estar disponible antes de confirmar, **cuando** confirmo, **entonces** se informa el motivo y el pedido no se registra. | CP-004 |
 
 ### HU-07 · Consultar el estado de mis pedidos (RU-05)
 **Como** cliente **quiero** ver el estado de mis pedidos **para** saber cuándo retirarlos.
@@ -112,9 +112,9 @@ Prioridad: M · Estimación: 3
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** que tengo pedidos, **cuando** abro «Mis pedidos», **entonces** veo cada uno con fecha, código, estado y total, del más reciente al más antiguo. | |
-| 2 | **Dado** un pedido, **cuando** abro su detalle, **entonces** veo el seguimiento con la hora de cada estado alcanzado y quién lo registró. | |
-| 3 | **Dado** el pedido de otro cliente, **cuando** intento abrirlo, **entonces** no se muestra. | |
+| 1 | **Dado** que tengo pedidos, **cuando** abro «Mis pedidos», **entonces** veo cada uno con fecha, código, estado y total, del más reciente al más antiguo. | CP-005 |
+| 2 | **Dado** un pedido, **cuando** abro su detalle, **entonces** veo el seguimiento con la hora de cada estado alcanzado y quién lo registró. | CP-005 |
+| 3 | **Dado** el pedido de otro cliente, **cuando** intento abrirlo, **entonces** no se muestra. | CP-005 |
 
 ### HU-08 · Registrar productos en el menú (RU-06)
 **Como** personal **quiero** agregar productos **para** mantener el menú actualizado.
@@ -122,8 +122,8 @@ Prioridad: M · Estimación: 3
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** código, nombre, categoría, precio y disponibilidad válidos, **cuando** guardo, **entonces** el producto aparece en el listado y en el menú si está disponible. | |
-| 2 | **Dado** un código ya existente, un precio ≤ 0 o con más de dos decimales, **cuando** guardo, **entonces** veo el motivo y no se registra. | |
+| 1 | **Dado** código, nombre, categoría, precio y disponibilidad válidos, **cuando** guardo, **entonces** el producto aparece en el listado y en el menú si está disponible. | CP-007 |
+| 2 | **Dado** un código ya existente, un precio ≤ 0 o con más de dos decimales, **cuando** guardo, **entonces** veo el motivo y no se registra. | CP-007 |
 
 ### HU-09 · Actualizar productos, precios y disponibilidad (RU-06)
 **Como** personal **quiero** modificar productos y marcarlos como disponibles o no **para** reflejar lo que realmente puedo vender.
@@ -131,8 +131,8 @@ Prioridad: M · Estimación: 3
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** un producto, **cuando** cambio nombre, categoría o precio, **entonces** los nuevos pedidos usan los nuevos valores y los anteriores conservan los suyos. | |
-| 2 | **Dado** un producto disponible, **cuando** lo desactivo, **entonces** deja de aparecer en el menú del cliente y no puede pedirse. | |
+| 1 | **Dado** un producto, **cuando** cambio nombre, categoría o precio, **entonces** los nuevos pedidos usan los nuevos valores y los anteriores conservan los suyos. | CP-004, CP-007 |
+| 2 | **Dado** un producto disponible, **cuando** lo desactivo, **entonces** deja de aparecer en el menú del cliente y no puede pedirse. | CP-003, CP-007 |
 
 ### HU-10 · Ingresar como personal
 **Como** personal **quiero** ingresar con usuario y clave **para** que solo el personal procese pedidos y modifique el menú.
@@ -140,9 +140,9 @@ Prioridad: M · Estimación: 2
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** usuario y clave correctos, **cuando** ingreso, **entonces** veo la lista de pedidos. | |
-| 2 | **Dado** una clave incorrecta, **cuando** ingreso, **entonces** veo «Usuario o clave incorrectos». | |
-| 3 | **Dado** que no he ingresado, **cuando** abro una página del personal, **entonces** se me redirige al ingreso. | |
+| 1 | **Dado** usuario y clave correctos, **cuando** ingreso, **entonces** veo la lista de pedidos. | CP-006 |
+| 2 | **Dado** una clave incorrecta, **cuando** ingreso, **entonces** veo «Usuario o clave incorrectos». | CP-006 |
+| 3 | **Dado** que no he ingresado, **cuando** abro una página del personal, **entonces** se me redirige al ingreso. | CP-006 |
 
 ### HU-11 · Consultar pedidos por estado (RU-07)
 **Como** personal **quiero** ver los pedidos agrupados por estado y en orden de llegada **para** atenderlos en orden.
@@ -150,7 +150,7 @@ Prioridad: M · Estimación: 2
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** pedidos en varios estados, **cuando** abro una pestaña de estado, **entonces** veo solo esos pedidos, del más antiguo al más reciente, con cliente, productos y total, y el número de pedidos en cada pestaña. | |
+| 1 | **Dado** pedidos en varios estados, **cuando** abro una pestaña de estado, **entonces** veo solo esos pedidos, del más antiguo al más reciente, con cliente, productos y total, y el número de pedidos en cada pestaña. | CP-008 |
 
 ### HU-12 · Registrar el avance de preparación (RU-07)
 **Como** personal **quiero** marcar un pedido como En preparación y luego como Listo para retirar **para** que el cliente sepa cuándo acercarse.
@@ -158,9 +158,9 @@ Prioridad: M · Estimación: 3
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** un pedido Pendiente, **cuando** pulso «Iniciar preparación», **entonces** pasa a En preparación; y desde ahí, con «Marcar listo para retirar», pasa a Listo para retirar. | |
-| 2 | **Dado** cualquier pedido, **cuando** intento saltar, retroceder o repetir un estado, **entonces** se rechaza. | |
-| 3 | **Dado** que dos empleados avanzan el mismo pedido a la vez, **cuando** ambos guardan, **entonces** solo el primero tiene efecto y el segundo recibe un aviso. | |
+| 1 | **Dado** un pedido Pendiente, **cuando** pulso «Iniciar preparación», **entonces** pasa a En preparación; y desde ahí, con «Marcar listo para retirar», pasa a Listo para retirar. | CP-008 |
+| 2 | **Dado** cualquier pedido, **cuando** intento saltar, retroceder o repetir un estado, **entonces** se rechaza. | CP-008 |
+| 3 | **Dado** que dos empleados avanzan el mismo pedido a la vez, **cuando** ambos guardan, **entonces** solo el primero tiene efecto y el segundo recibe un aviso. | CP-008 |
 
 ### HU-13 · Entregar un pedido verificando el código (RU-07)
 **Como** personal **quiero** registrar la entrega solo con el código del cliente **para** no entregar pedidos equivocados.
@@ -168,56 +168,56 @@ Prioridad: M · Estimación: 3
 
 | # | Criterio de aceptación | CP |
 |---|---|---|
-| 1 | **Dado** un pedido Listo para retirar, **cuando** escribo el código que presenta el cliente (sin importar mayúsculas, espacios o guiones) y registro la entrega, **entonces** pasa a Entregado. | |
-| 2 | **Dado** un código que no corresponde al pedido, **cuando** registro la entrega, **entonces** se rechaza. | |
-| 3 | **Dado** un pedido Pendiente o En preparación, **cuando** intento entregarlo aunque el código sea correcto, **entonces** se rechaza. | |
-| 4 | **Dado** un pedido ya Entregado, **cuando** intento entregarlo otra vez, **entonces** se rechaza. | |
-| 5 | **Dado** que intento pasar a Entregado sin código, **cuando** uso el avance de estado, **entonces** se rechaza. | |
+| 1 | **Dado** un pedido Listo para retirar, **cuando** escribo el código que presenta el cliente (sin importar mayúsculas, espacios o guiones) y registro la entrega, **entonces** pasa a Entregado. | CP-009 |
+| 2 | **Dado** un código que no corresponde al pedido, **cuando** registro la entrega, **entonces** se rechaza. | CP-009 |
+| 3 | **Dado** un pedido Pendiente o En preparación, **cuando** intento entregarlo aunque el código sea correcto, **entonces** se rechaza. | CP-009 |
+| 4 | **Dado** un pedido ya Entregado, **cuando** intento entregarlo otra vez, **entonces** se rechaza. | CP-009 |
+| 5 | **Dado** que intento pasar a Entregado sin código, **cuando** uso el avance de estado, **entonces** se rechaza. | CP-008 |
 
 ## 1.7 Requisitos funcionales
 
 | ID | El sistema debe… | HU | Verificación |
 |---|---|---|---|
-| RF-01 | registrar clientes validando cédula ecuatoriana (módulo 10), celular `09xxxxxxxx` y correo del dominio institucional configurado, sin duplicar cédula ni correo. | HU-01 | |
-| RF-02 | asignar a cada cliente un código único con formato `CLI-00001`. | HU-01 | |
-| RF-03 | identificar al cliente por cédula y correo institucional. | HU-02 | |
-| RF-04 | mostrar el menú con productos disponibles, categoría y precio. | HU-03 | |
-| RF-05 | aceptar cantidades enteras positivas hasta un máximo configurable (50 por defecto). | HU-04 | |
-| RF-06 | rechazar pedidos vacíos, con productos inexistentes o no disponibles, indicando el motivo. | HU-04 | |
-| RF-07 | calcular subtotales y total con el precio vigente antes de la confirmación. | HU-05 | |
-| RF-08 | volver a validar disponibilidad y total al confirmar, y rechazar si el total cambió o si no se recibió el total mostrado al cliente. | HU-05, HU-06 | |
-| RF-09 | registrar el pedido en estado Pendiente con fecha, total, detalle con precio unitario congelado y código de retiro único de 6 caracteres. | HU-06 | |
-| RF-10 | listar los pedidos del cliente con su estado, y mostrar el detalle y el seguimiento solo a su dueño. | HU-07 | |
-| RF-11 | registrar, editar y activar/desactivar productos. | HU-08, HU-09 | |
-| RF-12 | autenticar al personal con usuario y clave almacenada como hash. | HU-10 | |
-| RF-13 | listar pedidos por estado en orden de llegada, con conteo por estado. | HU-11 | |
-| RF-14 | permitir solo las transiciones Pendiente → En preparación → Listo para retirar. | HU-12 | |
-| RF-15 | registrar Entregado solo para pedidos Listos para retirar y con el código correcto. | HU-13 | |
-| RF-16 | guardar el historial de cambios de estado con fecha y usuario. | HU-07, HU-12 | |
+| RF-01 | registrar clientes validando cédula ecuatoriana (módulo 10), celular `09xxxxxxxx` y correo del dominio institucional configurado, sin duplicar cédula ni correo. | HU-01 | CP-001 · `test_validaciones`, `test_cliente_personal`, `test_web_cliente` |
+| RF-02 | asignar a cada cliente un código único con formato `CLI-00001`. | HU-01 | CP-001 · `test_cliente_personal`, `test_persistencia` |
+| RF-03 | identificar al cliente por cédula y correo institucional. | HU-02 | CP-001 · `test_cliente_personal`, `test_web_cliente` |
+| RF-04 | mostrar el menú con productos disponibles, categoría y precio. | HU-03 | CP-002 · `test_menu_servicio`, `test_web_cliente` |
+| RF-05 | aceptar cantidades enteras positivas hasta un máximo configurable (50 por defecto). | HU-04 | CP-003 · `test_pedido_registro`, `test_validaciones` |
+| RF-06 | rechazar pedidos vacíos, con productos inexistentes o no disponibles, indicando el motivo. | HU-04 | CP-003 · `test_pedido_registro` |
+| RF-07 | calcular subtotales y total con el precio vigente antes de la confirmación. | HU-05 | CP-004 · `test_dominio`, `test_pedido_registro` |
+| RF-08 | volver a validar disponibilidad y total al confirmar, y rechazar si el total cambió o si no se recibió el total mostrado al cliente. | HU-05, HU-06 | CP-004 · `test_pedido_registro`, `test_web_cliente` |
+| RF-09 | registrar el pedido en estado Pendiente con fecha, total, detalle con precio unitario congelado y código de retiro único de 6 caracteres. | HU-06 | CP-004 · `test_pedido_registro`, `test_persistencia` |
+| RF-10 | listar los pedidos del cliente con su estado, y mostrar el detalle y el seguimiento solo a su dueño. | HU-07 | CP-005 · `test_pedido_registro`, `test_web_comun` |
+| RF-11 | registrar, editar y activar/desactivar productos. | HU-08, HU-09 | CP-007 · `test_menu_servicio`, `test_web_personal` |
+| RF-12 | autenticar al personal con usuario y clave almacenada como hash. | HU-10 | CP-006 · `test_cliente_personal`, `test_web_personal` |
+| RF-13 | listar pedidos por estado en orden de llegada, con conteo por estado. | HU-11 | CP-008 · `test_pedido_atencion`, `test_persistencia` |
+| RF-14 | permitir solo las transiciones Pendiente → En preparación → Listo para retirar. | HU-12 | CP-008 · `test_pedido_atencion`, `test_dominio` |
+| RF-15 | registrar Entregado solo para pedidos Listos para retirar y con el código correcto. | HU-13 | CP-009 · `test_pedido_atencion`, `test_web_personal` |
+| RF-16 | guardar el historial de cambios de estado con fecha y usuario. | HU-07, HU-12 | CP-005, CP-008 · `test_pedido_atencion`, `test_persistencia` |
 
 ## 1.8 Requisitos no funcionales
 
 | ID | Categoría | Requisito | Verificación |
 |---|---|---|---|
-| RNF-01 | Persistencia | Productos, clientes, pedidos e historial persisten entre ejecuciones (SQLite en archivo). | |
-| RNF-02 | Integridad | Las reglas críticas se refuerzan también en la base de datos: `UNIQUE` en código de retiro, cédula, correo y código de producto; `CHECK` en estados, precios y cantidades; claves foráneas activas. | |
-| RNF-03 | Seguridad | Claves del personal con hash (PBKDF2/scrypt de Werkzeug); protección CSRF en todo formulario; cookies de sesión `HttpOnly` y `SameSite=Lax`; consultas SQL parametrizadas; redirecciones solo a rutas internas. | |
-| RNF-04 | Usabilidad | Interfaz en español, adaptable a celulares (desde 360 px), mensajes de error que indican qué corregir, foco de teclado visible. | |
-| RNF-05 | Mantenibilidad | Calificación pylint ≥ 9.0, 0 avisos flake8, complejidad ciclomática promedio A, cobertura de pruebas ≥ 85 %. | |
-| RNF-06 | Portabilidad | Funciona en Windows, macOS y Linux con Python 3.11 o superior, sin servicios externos. | |
-| RNF-07 | Rendimiento | Las páginas responden en menos de 1 s con hasta 1 000 pedidos en una instalación local. | |
-| RNF-08 | Concurrencia | Dos usuarios del personal no pueden aplicar el mismo cambio de estado dos veces. | |
+| RNF-01 | Persistencia | Productos, clientes, pedidos e historial persisten entre ejecuciones (SQLite en archivo). | CP-010 · `test_persistencia`, `test_aplicacion` |
+| RNF-02 | Integridad | Las reglas críticas se refuerzan también en la base de datos: `UNIQUE` en código de retiro, cédula, correo y código de producto; `CHECK` en estados, precios y cantidades; claves foráneas activas. | CP-001 (duplicados) · `test_persistencia` |
+| RNF-03 | Seguridad | Claves del personal con hash (PBKDF2/scrypt de Werkzeug); protección CSRF en todo formulario; cookies de sesión `HttpOnly` y `SameSite=Lax`; consultas SQL parametrizadas; redirecciones solo a rutas internas. | CP-005, CP-006 · `test_web_comun`, `test_cliente_personal` · bandit (documento 4) |
+| RNF-04 | Usabilidad | Interfaz en español, adaptable a celulares (desde 360 px), mensajes de error que indican qué corregir, foco de teclado visible. | CP-001, CP-010 |
+| RNF-05 | Mantenibilidad | Calificación pylint ≥ 9.0, 0 avisos flake8, complejidad ciclomática promedio A, cobertura de pruebas ≥ 85 %. | Análisis estático (documento 4) e integración continua: pylint, flake8, radon y `pytest --cov-fail-under=85` |
+| RNF-06 | Portabilidad | Funciona en Windows, macOS y Linux con Python 3.11 o superior, sin servicios externos. | CP-010 (Windows) · integración continua en Linux con Python 3.11, 3.12 y 3.13 |
+| RNF-07 | Rendimiento | Las páginas responden en menos de 1 s con hasta 1 000 pedidos en una instalación local. | CP-010 · `test_rendimiento` (1 000 pedidos) |
+| RNF-08 | Concurrencia | Dos usuarios del personal no pueden aplicar el mismo cambio de estado dos veces. | CP-008 · `test_pedido_atencion` |
 
 ## 1.9 Reglas de negocio
 | Regla | Dónde se aplica | Prueba |
 |---|---|---|
-| RN-NEG-01 Al menos un producto; cantidades enteras positivas. | | |
-| RN-NEG-02 Solo productos disponibles en nuevos pedidos. | | |
-| RN-NEG-03 Total = Σ precio vigente × cantidad. | | |
-| RN-NEG-04 El precio del pedido no cambia si cambia el menú. | | |
-| RN-NEG-05 Código de retiro único. | | |
-| RN-NEG-06 Pendiente → En preparación → Listo para retirar → Entregado, en ese orden. | | |
-| RN-NEG-07 Entregado solo desde Listo para retirar y con el código del cliente. | | |
+| RN-NEG-01 Al menos un producto; cantidades enteras positivas. | `PedidoServicio.interpretar_cantidades` y `calcular_resumen`; `CHECK (cantidad > 0)` en `detalle_pedido` | CP-003 · `test_pedido_registro`, `test_validaciones` |
+| RN-NEG-02 Solo productos disponibles en nuevos pedidos. | `MenuServicio.listar_menu`; `PedidoServicio.calcular_resumen` y `confirmar_pedido` | CP-002, CP-003, CP-004 · `test_pedido_registro`, `test_menu_servicio` |
+| RN-NEG-03 Total = Σ precio vigente × cantidad. | `ResumenPedido.total_centavos`; `PedidoServicio.confirmar_pedido` revalida el total mostrado | CP-004 · `test_dominio`, `test_pedido_registro` |
+| RN-NEG-04 El precio del pedido no cambia si cambia el menú. | `detalle_pedido.precio_unitario_centavos` guarda el precio al confirmar | CP-004 · `test_pedido_registro` |
+| RN-NEG-05 Código de retiro único. | `PedidoServicio._codigo_unico`; `UNIQUE` en `pedido.codigo_retiro` | CP-004 · `test_pedido_registro`, `test_persistencia` |
+| RN-NEG-06 Pendiente → En preparación → Listo para retirar → Entregado, en ese orden. | `EstadoPedido.siguiente`; `PedidoServicio.avanzar_estado`; `PedidoRepositorio.actualizar_estado` condicional; `CHECK` de estado | CP-008 · `test_pedido_atencion`, `test_dominio` |
+| RN-NEG-07 Entregado solo desde Listo para retirar y con el código del cliente. | `PedidoServicio.entregar_pedido` | CP-009 · `test_pedido_atencion`, `test_web_personal` |
 
 ## 1.10 Ambigüedades detectadas y decisiones tomadas
 
@@ -252,19 +252,19 @@ La trazabilidad permite comprobar que las funcionalidades desarrolladas responde
 
 | Requisito de negocio | Requisito de usuario | Regla de negocio | Historia de usuario | Requisito funcional | Elementos de diseño relacionados | Casos de prueba |
 |---|---|---|---|---|---|---|
-| RN-01, RN-03 (relación de apoyo) | — | — | HU-01. Registrar cliente | RF-01, RF-02 | Ruta `/registro`, modelo Cliente y sección 2.5 | Pendiente |
-| RN-01, RN-03 (relación de apoyo) | RU-04, RU-05 (relación de apoyo) | — | HU-02. Identificar cliente | RF-03 | Ruta `/ingresar`, sección 2.7 de seguridad y gestión de sesión | Pendiente |
-| RN-02 | RU-01 | — | HU-03. Consultar menú | RF-04 | Ruta `/menu`, modelo Producto y sección 2.6 | Pendiente |
-| RN-01 | RU-02 | RN-NEG-01, RN-NEG-02 | HU-04. Seleccionar productos y cantidades | RF-05, RF-06 | PN-01, ruta `/pedido/revisar`, modelo Pedido y Detalle del pedido | Pendiente |
-| RN-01, RN-02 | RU-03 | RN-NEG-03 | HU-05. Consultar importe total | RF-07, RF-08 | PN-01, ruta `/pedido/revisar`, decisiones D-04 y D-05 | Pendiente |
-| RN-01, RN-04 | RU-04 | RN-NEG-01, RN-NEG-02, RN-NEG-03, RN-NEG-04, RN-NEG-05, RN-NEG-06 | HU-06. Confirmar pedido y obtener código | RF-08, RF-09 | PN-01 (rechazo si el total cambió o no se recibió), ruta `/pedido/confirmar`, decisiones D-04, D-05 y D-09 | Pendiente |
-| RN-03 | RU-05 | RN-NEG-06 | HU-07. Consultar estado del pedido | RF-10, RF-16 | Ruta `/mis-pedidos`, ruta `/mis-pedidos/<id>`, seguimiento con fecha y responsable de cada estado (secciones 2.4 y 2.6), tabla `historial_estado` | Pendiente |
-| RN-02 | RU-06 | — | HU-08. Registrar productos | RF-11 | Rutas `/personal/productos` y `/personal/productos/nuevo`, modelo Producto | Pendiente |
-| RN-02 | RU-06 | RN-NEG-04 | HU-09. Actualizar productos, precios y disponibilidad | RF-11 | Rutas `/personal/productos/<codigo>/editar` y `/personal/productos/<codigo>/disponibilidad`, modelo Producto | Pendiente |
-| RN-02, RN-03 (relación de apoyo) | RU-06, RU-07 (relación de apoyo) | — | HU-10. Iniciar sesión del personal | RF-12 | Rutas `/personal/ingresar` y `/personal/salir`, sección 2.7 de seguridad | Pendiente |
-| RN-03 | RU-07 | RN-NEG-06 | HU-11. Consultar pedidos por estado | RF-13 | PN-02, ruta `/personal/pedidos?estado=` y modelo Pedido | Pendiente |
-| RN-03 | RU-07 | RN-NEG-06 | HU-12. Avanzar estado de preparación | RF-14, RF-16 | PN-02 (orden obligatorio de estados), ruta `/personal/pedidos/<id>/avanzar` y decisión D-08 | Pendiente |
-| RN-03, RN-04 | RU-07 | RN-NEG-06, RN-NEG-07 | HU-13. Entregar pedido verificando código | RF-15 | PN-02 (orden obligatorio de estados y validación del identificador del pedido), rutas `/personal/entrega` y `/personal/entrega/confirmar`, decisión D-07 | Pendiente |
+| RN-01, RN-03 (relación de apoyo) | — | — | HU-01. Registrar cliente | RF-01, RF-02 | Ruta `/registro`, modelo Cliente y sección 2.5 | CP-001 |
+| RN-01, RN-03 (relación de apoyo) | RU-04, RU-05 (relación de apoyo) | — | HU-02. Identificar cliente | RF-03 | Ruta `/ingresar`, sección 2.7 de seguridad y gestión de sesión | CP-001, CP-005 |
+| RN-02 | RU-01 | — | HU-03. Consultar menú | RF-04 | Ruta `/menu`, modelo Producto y sección 2.6 | CP-002 |
+| RN-01 | RU-02 | RN-NEG-01, RN-NEG-02 | HU-04. Seleccionar productos y cantidades | RF-05, RF-06 | PN-01, ruta `/pedido/revisar`, modelo Pedido y Detalle del pedido | CP-003 |
+| RN-01, RN-02 | RU-03 | RN-NEG-03 | HU-05. Consultar importe total | RF-07, RF-08 | PN-01, ruta `/pedido/revisar`, decisiones D-04 y D-05 | CP-004 |
+| RN-01, RN-04 | RU-04 | RN-NEG-01, RN-NEG-02, RN-NEG-03, RN-NEG-04, RN-NEG-05, RN-NEG-06 | HU-06. Confirmar pedido y obtener código | RF-08, RF-09 | PN-01 (rechazo si el total cambió o no se recibió), ruta `/pedido/confirmar`, decisiones D-04, D-05 y D-09 | CP-004 |
+| RN-03 | RU-05 | RN-NEG-06 | HU-07. Consultar estado del pedido | RF-10, RF-16 | Ruta `/mis-pedidos`, ruta `/mis-pedidos/<id>`, seguimiento con fecha y responsable de cada estado (secciones 2.4 y 2.6), tabla `historial_estado` | CP-005 |
+| RN-02 | RU-06 | — | HU-08. Registrar productos | RF-11 | Rutas `/personal/productos` y `/personal/productos/nuevo`, modelo Producto | CP-007 |
+| RN-02 | RU-06 | RN-NEG-04 | HU-09. Actualizar productos, precios y disponibilidad | RF-11 | Rutas `/personal/productos/<codigo>/editar` y `/personal/productos/<codigo>/disponibilidad`, modelo Producto | CP-007, CP-004 |
+| RN-02, RN-03 (relación de apoyo) | RU-06, RU-07 (relación de apoyo) | — | HU-10. Iniciar sesión del personal | RF-12 | Rutas `/personal/ingresar` y `/personal/salir`, sección 2.7 de seguridad | CP-006 |
+| RN-03 | RU-07 | RN-NEG-06 | HU-11. Consultar pedidos por estado | RF-13 | PN-02, ruta `/personal/pedidos?estado=` y modelo Pedido | CP-008 |
+| RN-03 | RU-07 | RN-NEG-06 | HU-12. Avanzar estado de preparación | RF-14, RF-16 | PN-02 (orden obligatorio de estados), ruta `/personal/pedidos/<id>/avanzar` y decisión D-08 | CP-008 |
+| RN-03, RN-04 | RU-07 | RN-NEG-06, RN-NEG-07 | HU-13. Entregar pedido verificando código | RF-15 | PN-02 (orden obligatorio de estados y validación del identificador del pedido), rutas `/personal/entrega` y `/personal/entrega/confirmar`, decisión D-07 | CP-009, CP-008 |
 
 
 ### 1.12.2. Matriz de trazabilidad de requisitos no funcionales
@@ -273,11 +273,11 @@ Esta matriz relaciona los requisitos no funcionales definidos por el equipo con 
 
 | Requisito de negocio relacionado | Requisito no funcional | Elementos de diseño o documentación relacionados | Método de verificación | Casos de prueba |
 |---|---|---|---|---|
-| RN-01, RN-03 | RNF-01. Persistencia de información | Arquitectura de persistencia, sección 2.1; modelo de datos, sección 2.5; decisión D-02 | Registrar productos y pedidos, reiniciar la aplicación y comprobar que la información se conserva | Pendiente |
-| RN-01, RN-03, RN-04 | RNF-02. Integridad de la base de datos | Modelo de datos y diccionario, sección 2.5; restricciones UNIQUE, CHECK y claves foráneas | Comprobar que la base de datos rechaza registros duplicados o datos que incumplen las restricciones | Pendiente |
-| RN-01, RN-02, RN-03, RN-04 | RNF-03. Seguridad | Rutas y navegación, sección 2.6; seguridad, sección 2.7; manejo de errores, sección 2.8 | Verificar autenticación, control de acceso, protección CSRF, sesiones y validación de datos | Pendiente |
-| RN-02, RN-03 | RNF-04. Usabilidad | Diseño de interfaz y navegación, sección 2.6 | Comprobar la visualización desde distintos tamaños de pantalla, la navegación con teclado y la claridad de los mensajes | Pendiente |
-| RN-01, RN-02, RN-03, RN-04 | RNF-05. Mantenibilidad | Documento de ambiente de desarrollo, `03_ambiente_desarrollo.md`; herramientas de calidad y configuración de pruebas | Ejecutar las herramientas de análisis estático y comprobar los niveles de cobertura y calidad establecidos | Pendiente |
-| RN-01, RN-02, RN-03, RN-04 | RNF-06. Portabilidad | Documento de ambiente de desarrollo, `03_ambiente_desarrollo.md`; configuración de Python y dependencias | Instalar y ejecutar la aplicación en los sistemas operativos contemplados en el requisito | Pendiente |
-| RN-01, RN-03 | RNF-07. Rendimiento | Arquitectura de persistencia, sección 2.1; modelo de datos e índices, sección 2.5 | Medir el tiempo de consulta con un conjunto de hasta 1000 pedidos y comprobar el límite establecido de un segundo | Pendiente |
-| RN-03 | RNF-08. Concurrencia | Diagramas de secuencia, sección 2.4 (orden de estados y control de concurrencia en PN-02); decisión D-08 | Simular que dos trabajadores intentan modificar simultáneamente el estado de un mismo pedido y comprobar que no se aplique dos veces el mismo cambio | Pendiente |
+| RN-01, RN-03 | RNF-01. Persistencia de información | Arquitectura de persistencia, sección 2.1; modelo de datos, sección 2.5; decisión D-02 | Registrar productos y pedidos, reiniciar la aplicación y comprobar que la información se conserva | CP-010 |
+| RN-01, RN-03, RN-04 | RNF-02. Integridad de la base de datos | Modelo de datos y diccionario, sección 2.5; restricciones UNIQUE, CHECK y claves foráneas | Comprobar que la base de datos rechaza registros duplicados o datos que incumplen las restricciones | CP-001 · `test_persistencia` |
+| RN-01, RN-02, RN-03, RN-04 | RNF-03. Seguridad | Rutas y navegación, sección 2.6; seguridad, sección 2.7; manejo de errores, sección 2.8 | Verificar autenticación, control de acceso, protección CSRF, sesiones y validación de datos | CP-005, CP-006 · `test_web_comun` |
+| RN-02, RN-03 | RNF-04. Usabilidad | Diseño de interfaz y navegación, sección 2.6 | Comprobar la visualización desde distintos tamaños de pantalla, la navegación con teclado y la claridad de los mensajes | CP-001, CP-010 |
+| RN-01, RN-02, RN-03, RN-04 | RNF-05. Mantenibilidad | Documento de ambiente de desarrollo, `03_ambiente_desarrollo.md`; herramientas de calidad y configuración de pruebas | Ejecutar las herramientas de análisis estático y comprobar los niveles de cobertura y calidad establecidos | Documento 4 · integración continua |
+| RN-01, RN-02, RN-03, RN-04 | RNF-06. Portabilidad | Documento de ambiente de desarrollo, `03_ambiente_desarrollo.md`; configuración de Python y dependencias | Instalar y ejecutar la aplicación en los sistemas operativos contemplados en el requisito | CP-010 · integración continua |
+| RN-01, RN-03 | RNF-07. Rendimiento | Arquitectura de persistencia, sección 2.1; modelo de datos e índices, sección 2.5 | Medir el tiempo de consulta con un conjunto de hasta 1000 pedidos y comprobar el límite establecido de un segundo | CP-010 · `test_rendimiento` |
+| RN-03 | RNF-08. Concurrencia | Diagramas de secuencia, sección 2.4 (orden de estados y control de concurrencia en PN-02); decisión D-08 | Simular que dos trabajadores intentan modificar simultáneamente el estado de un mismo pedido y comprobar que no se aplique dos veces el mismo cambio | CP-008 · `test_pedido_atencion` |
