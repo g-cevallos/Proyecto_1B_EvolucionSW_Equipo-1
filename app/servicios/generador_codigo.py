@@ -12,7 +12,7 @@ LONGITUD = 6
 def generar_codigo_retiro(longitud: int = LONGITUD) -> str:
     """Genera un código aleatorio criptográficamente seguro, por ejemplo ``K7Q2MX``.
 
-    La unicidad (RN-NEG-05) la garantiza ``PedidoServicio`` consultando la base
+    La unicidad la garantiza ``PedidoServicio`` consultando la base
     de datos y la restricción ``UNIQUE`` de la tabla ``pedido``.
     """
     return "".join(secrets.choice(ALFABETO) for _ in range(longitud))
